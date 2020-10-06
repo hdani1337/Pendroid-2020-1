@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 
 import hu.cehessteg.remember.Actor.Card;
+import hu.cehessteg.remember.Actor.CardType;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.ResponseViewport;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
@@ -18,7 +19,7 @@ public class CardStage extends SimpleWorldStage {
     public static long score;
 
     public static Vector2 matrix = new Vector2((int)(Math.random()*5)+3,(int)(Math.random()*3)+3);
-    public ArrayList<Card> kartyak;
+    public static ArrayList<Card> kartyak;
     static ArrayList<Card> selectedCards;
 
     public static boolean isAct;
@@ -29,16 +30,24 @@ public class CardStage extends SimpleWorldStage {
         kartyak = new ArrayList<Card>();
         selectedCards = new ArrayList<Card>();
 
+        ArrayList<CardType> types = new ArrayList<>();
+        for (int i = 0; i < (matrix.x*matrix.y)/2; i++) {
+            types.add(CardType.values()[i]);
+            types.add(CardType.values()[i]);
+            System.out.println(types);
+        }
+
         for (byte y = 0; y < matrix.y; y++) {
             for (byte x = 0; x < matrix.x; x++) {
-                kartyak.add(new Card(game, new Vector2(x,y), world));
+                int random = (int) (Math.random()*types.size());
+                kartyak.add(new Card(game, new Vector2(x,y), world, types.get(random)));
+                types.remove(random);
             }
         }
 
         for (Card c : kartyak) {
             addActor(c);
         }
-        System.out.println(matrix);
 
         addTimer(new TickTimer(3,true,new TickTimerListener(){
             @Override
@@ -64,8 +73,13 @@ public class CardStage extends SimpleWorldStage {
 
         for (byte y = 0; y < matrix.y; y++) {
             for (byte x = 0; x < matrix.x; x++) {
-                int id = y*x+x;
-                shuffledCards.get(id).koordinatak = new Vector2(x,y);
+                try {
+                    int id = y * x + x;
+                    shuffledCards.get(id).koordinatak = new Vector2(x, y);
+                    kartyak.get(id).koordinatak = new Vector2(x, y);
+                }catch (IndexOutOfBoundsException e){
+                    System.out.println("("+matrix.x+","+matrix.y+") helyen nincs kártya!");
+                }
             }
         }
 
@@ -85,10 +99,14 @@ public class CardStage extends SimpleWorldStage {
     }
 
     private static void checkCards(){
+        System.out.println(selectedCards.size());
         if(selectedCards.size() == 2){
             if(selectedCards.get(0).type == selectedCards.get(1).type){
                 ((SimpleWorldHelper)selectedCards.get(0).getActorWorldHelper()).getBody().moveToFixSpeed(selectedCards.get(0).getX(),20,5, PositionRule.Center);
                 ((SimpleWorldHelper)selectedCards.get(1).getActorWorldHelper()).getBody().moveToFixSpeed(selectedCards.get(1).getX(),20,5, PositionRule.Center);
+                kartyak.remove(selectedCards.get(0));
+                kartyak.remove(selectedCards.get(1));
+                selectedCards.clear();
             }else{
                 selectedCards.get(0).deSelect();
                 selectedCards.get(1).deSelect();

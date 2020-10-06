@@ -1,5 +1,6 @@
 package hu.cehessteg.remember.Actor;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -32,32 +33,33 @@ public class Card extends OneSpriteStaticActor {
     public CardType type;
     private int id;
 
-    public Card(MyGame game, Vector2 koordinatak, SimpleWorld world) {
-        super(game, "pic/logos/csany.png");
+    public Card(MyGame game, Vector2 koordinatak, SimpleWorld world, CardType cardType) {
+        super(game, "pic/kartyaHatlap.png");
 
         this.koordinatak = koordinatak;
         this.world = world;
         this.id = (int) (koordinatak.x+koordinatak.y*CardStage.matrix.x);
         this.isSelected = false;
+        this.type = cardType;
 
         setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
-        setSize(getWidth()*0.006f,getHeight()*0.006f);
-        setPosition(koordinatak.x*1.25f,9-(koordinatak.y*1.25f)-getHeight());
-        setColor(1,1,1,0.25f);
+        setSize(getWidth()*0.0025f,getHeight()*0.0025f);
+        setPosition(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight());
+        setColor(getRandomColor());
 
         addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 Card.this.isSelected = !Card.this.isSelected;
                 flipCard();
+                super.touchUp(event, x, y, pointer, button);
             }
         });
     }
 
     public void deSelect(){
         isSelected = false;
-        flipCard();
+        ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
     }
 
     private void flipCard(){
@@ -71,12 +73,49 @@ public class Card extends OneSpriteStaticActor {
         }else{
             //FORDULJON VISSZA A KÁRTYA
             //TŰNJÖN EL A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorTo(1,1,1,1,0.25f);
+            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
             CardStage.removeCard(this);
+        }
+        System.out.println(koordinatak);
+    }
+
+    private Color getRandomColor(){
+        switch (type){
+            case EGY:
+                return Color.BLUE;
+            case KETTO:
+                return Color.BROWN;
+            case HAROM:
+                return Color.GOLD;
+            case NEGY:
+                return Color.RED;
+            case OT:
+                return Color.CYAN;
+            case HAT:
+                return Color.PINK;
+            case HET:
+                return Color.PURPLE;
+            case NYOLC:
+                return Color.LIME;
+            case KILENC:
+                return Color.MAGENTA;
+            case TIZ:
+                return Color.SKY;
+            case TIZENEGY:
+                return Color.SALMON;
+            case TIZENKETTO:
+                return Color.GOLDENROD;
+            case TIZENHAROM:
+                return Color.TAN;
+            case TIZENNEGY:
+                return Color.YELLOW;
+            case TIZENOT:
+                return Color.CORAL;
+            case TIZENHAT:
+                return Color.FIREBRICK;
+            default:
+                return Color.GRAY;
         }
     }
 }
 
-enum CardType{
-    EZEK, LESZNEK, A, KARTYA, TIPUSAI, MITTUDOMEN, JA
-}

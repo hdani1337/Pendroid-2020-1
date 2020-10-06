@@ -10,6 +10,9 @@ import hu.csanyzeg.master.MyBaseClasses.Scene2D.ResponseViewport;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldStage;
+import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimer;
+import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
+import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
 
 public class CardStage extends SimpleWorldStage {
     public static long score;
@@ -36,6 +39,39 @@ public class CardStage extends SimpleWorldStage {
             addActor(c);
         }
         System.out.println(matrix);
+
+        addTimer(new TickTimer(3,true,new TickTimerListener(){
+            @Override
+            public void onTick(Timer sender, float correction) {
+                super.onTick(sender, correction);
+                shuffleCards();
+            }
+        }));
+    }
+
+    private void shuffleCards(){
+        ArrayList<Integer> randomIDs = new ArrayList<>();
+        ArrayList<Card> shuffledCards = new ArrayList<>();
+        while (randomIDs.size() < kartyak.size()){
+            int newSzam = (int) (Math.random()*kartyak.size());
+            if(!randomIDs.contains(newSzam))
+                randomIDs.add(newSzam);
+        }
+
+        for (int i = 0; i < kartyak.size(); i++){
+            shuffledCards.add(kartyak.get(randomIDs.get(i)));
+        }
+
+        for (byte y = 0; y < matrix.y; y++) {
+            for (byte x = 0; x < matrix.x; x++) {
+                int id = y*x+x;
+                shuffledCards.get(id).koordinatak = new Vector2(x,y);
+            }
+        }
+
+        for (int i = 0; i < shuffledCards.size(); i++){
+            ((SimpleWorldHelper)kartyak.get(i).getActorWorldHelper()).getBody().moveToFixSpeed(shuffledCards.get(i).getX(),shuffledCards.get(i).getY(),5,PositionRule.LeftBottom);
+        }
     }
 
     public static void addCard(Card card) {

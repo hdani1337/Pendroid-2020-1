@@ -4,11 +4,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import hu.cehessteg.remember.Screen.GameScreen;
+import hu.cehessteg.remember.Stage.CardStage;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.MyStage;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
-import hu.cehessteg.remember.Stage.GameStage;
 
 public class Pause extends OneSpriteStaticActor {
     //region AssetList
@@ -30,7 +30,7 @@ public class Pause extends OneSpriteStaticActor {
                 if(getStage() != null && getStage() instanceof MyStage) {
                     if (((MyStage) getStage()).getScreen() != null) {
                         if (((MyStage) getStage()).getScreen() instanceof GameScreen)
-                            GameStage.isAct = false;
+                            CardStage.isAct = false;
                     }
                 }
             }

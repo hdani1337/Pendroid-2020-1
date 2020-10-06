@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
+import hu.cehessteg.remember.Screen.GameScreen;
 import hu.cehessteg.remember.Screen.IntroScreen;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.cehessteg.remember.Stage.LoadingStage;
@@ -24,7 +25,7 @@ public class MemoryGame extends MyGame {
 	public void create() {
 		super.create();
 		setLoadingStage(new LoadingStage(this));
-		setScreen(new IntroScreen(this));
+		setScreen(new GameScreen(this));
 		try {
 			preferences = Gdx.app.getPreferences("frameworkSave");
 			muted = preferences.getBoolean("muted");

@@ -76,7 +76,7 @@ public class PauseStage extends PrettyStage {
                 super.clicked(event, x, y);
                 if(getScreen() != null) {
                     if (getScreen() instanceof GameScreen)
-                        GameStage.isAct = true;
+                        CardStage.isAct = true;
                 }
             }
         });
@@ -145,16 +145,16 @@ public class PauseStage extends PrettyStage {
         super.act(delta);
         if(getScreen() != null) {
             if (getScreen() instanceof GameScreen) {
-                if (!GameStage.isAct && !GameStage.isGameOver) pause(null);
-                else if (GameStage.isAct && addedActors) resume(null);
+                if (!CardStage.isAct && !CardStage.isGameOver) pause(null);
+                else if (CardStage.isAct && addedActors) resume(null);
             }
         }
     }
 
     private void pause(Music music){
         if(getScreen() != null && (getScreen() instanceof GameScreen)){
-            if(!pontok.text.equals("Jelenlegi pontszámod\n"+GameStage.score)) {
-                pontok.setText("Jelenlegi pontszámod\n"+GameStage.score);
+            if(!pontok.text.equals("Jelenlegi pontszámod\n"+CardStage.score)) {
+                pontok.setText("Jelenlegi pontszámod\n"+CardStage.score);
                 pontok.setX(getViewport().getWorldWidth()/2-pontok.getWidth()/2);
             }
         }

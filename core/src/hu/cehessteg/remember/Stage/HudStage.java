@@ -16,7 +16,7 @@ public class HudStage extends PrettyStage {
         //add assets here
     }
 
-    public static GameStage stage;//Hátha kell a GameStageből valami
+    public static CardStage stage;//Hátha kell a GameStageből valami
     private Pause pause;
     private TextBox scoreBoard;
     private TextBox end;
@@ -50,8 +50,8 @@ public class HudStage extends PrettyStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                GameStage.isGameOver = true;
-                GameStage.isAct = false;
+                //GameStage.isGameOver = true;
+                //GameStage.isAct = false;
             }
         });
     }
@@ -70,15 +70,15 @@ public class HudStage extends PrettyStage {
 
     private void refreshScore(){
         if(getScreen() != null && getScreen() instanceof GameScreen){
-            if(GameStage.isAct && !GameStage.isGameOver) {
-                if (!scoreBoard.text.equals(((GameScreen) getScreen()).gameStage.score)) {
-                    scoreBoard.setText(((GameScreen) getScreen()).gameStage.score + "");
+            /*if(GameStage.isAct && !GameStage.isGameOver) {
+                if (!scoreBoard.text.equals(((GameScreen) getScreen()).cardStage.score)) {
+                    scoreBoard.setText(((GameScreen) getScreen()).cardStage.score + "");
                     scoreBoard.setX(getViewport().getWorldWidth() / 2 - scoreBoard.getWidth() / 2);
                     if(!scoreBoard.isVisible()) scoreBoard.setVisible(true);
                 }
             }else{
                 if(scoreBoard.isVisible()) scoreBoard.setVisible(false);
-            }
+            }*/
         }
     }
 

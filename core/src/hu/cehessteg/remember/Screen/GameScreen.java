@@ -1,17 +1,17 @@
 package hu.cehessteg.remember.Screen;
 
+import hu.cehessteg.remember.Stage.CardStage;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.MyScreen;
 import hu.cehessteg.remember.Stage.GameOverStage;
-import hu.cehessteg.remember.Stage.GameStage;
 import hu.cehessteg.remember.Stage.HudStage;
 import hu.cehessteg.remember.Stage.PauseStage;
 
 public class GameScreen extends MyScreen {
     public static AssetList assetList = new AssetList();
     static {
-        assetList.collectAssetDescriptor(GameStage.class, assetList);
+        assetList.collectAssetDescriptor(CardStage.class, assetList);
         assetList.collectAssetDescriptor(HudStage.class, assetList);
         assetList.collectAssetDescriptor(GameOverStage.class, assetList);
         assetList.collectAssetDescriptor(PauseStage.class, assetList);
@@ -21,16 +21,16 @@ public class GameScreen extends MyScreen {
         super(game);
     }
 
-    public GameStage gameStage;
+    public CardStage cardStage;
 
     @Override
     protected void afterAssetsLoaded() {
-        gameStage = new GameStage(game);
-        HudStage.stage = gameStage;
-        addStage(gameStage,1,false);
-        addStage(new HudStage(game),2, true);
-        addStage(new PauseStage(game),3, true);
-        addStage(new GameOverStage(game),4, true);
+        cardStage = new CardStage(game);
+        HudStage.stage = cardStage;
+        addStage(cardStage,1,true);
+        //addStage(new HudStage(game),2, true);
+        //addStage(new PauseStage(game),3, true);
+        //addStage(new GameOverStage(game),4, true);
     }
 
     @Override

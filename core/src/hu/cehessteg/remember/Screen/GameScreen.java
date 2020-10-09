@@ -1,6 +1,7 @@
 package hu.cehessteg.remember.Screen;
 
 import hu.cehessteg.remember.Stage.CardStage;
+import hu.cehessteg.remember.Stage.TableStage;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.MyScreen;
@@ -25,12 +26,13 @@ public class GameScreen extends MyScreen {
 
     @Override
     protected void afterAssetsLoaded() {
+        addStage(new TableStage(game),0,false);
         cardStage = new CardStage(game);
         HudStage.stage = cardStage;
         addStage(cardStage,1,true);
-        //addStage(new HudStage(game),2, true);
-        //addStage(new PauseStage(game),3, true);
-        //addStage(new GameOverStage(game),4, true);
+        addStage(new HudStage(game),2, true);
+        addStage(new PauseStage(game),3, true);
+        addStage(new GameOverStage(game),4, true);
     }
 
     @Override

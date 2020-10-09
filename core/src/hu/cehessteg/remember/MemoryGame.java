@@ -29,6 +29,8 @@ public class MemoryGame extends MyGame {
 		try {
 			preferences = Gdx.app.getPreferences("frameworkSave");
 			muted = preferences.getBoolean("muted");
+			Gdx.app.getGraphics().setTitle("Remember Me");
+			Gdx.app.getGraphics().setResizable(false);
 			setDisplay();
 		}catch (NullPointerException e){
 			/**Ha NullPointert kapunk, akkor még nincsenek mentett adatok**/

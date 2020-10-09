@@ -41,7 +41,7 @@ public class GameOverStage extends PrettyStage {
     //region Absztrakt metódusok
     @Override
     public void assignment() {
-        info = new TextBox(game, "Vesztettél!",2f);
+        info = new TextBox(game, "Gratulálok, nyertél!",2f);
         pontok = new TextBox(game, "Elért pontszámod\n-NULL-");
         again = new TextBox(game, "Új játék",1.5f);
         menu = new TextBox(game, "Menü",1.5f);

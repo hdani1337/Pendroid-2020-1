@@ -229,19 +229,19 @@ public class OptionsStage extends PrettyStage {
         //Nehézségek
         switch (difficulty){
             case 1:{
-                difficultyButton.setText("Nehézség: DIF1");
+                difficultyButton.setText("Nehézség: Könnyű");
                 break;
             }
             case 2:{
-                difficultyButton.setText("Nehézség: DIF2");
+                difficultyButton.setText("Nehézség: Normál");
                 break;
             }
             case 3:{
-                difficultyButton.setText("Nehézség: DIF3");
+                difficultyButton.setText("Nehézség: Nehéz");
                 break;
             }
             default:{
-                difficultyButton.setText("Nehézség: DIF2");
+                difficultyButton.setText("Nehézség: Normál");
                 preferences.putInteger("difficulty",2);
                 preferences.flush();
                 break;
@@ -251,11 +251,11 @@ public class OptionsStage extends PrettyStage {
         //Játékmód
         switch (gamemode){
             case 1:{
-                gameModeButton.setText("Játékmód: MODE1");
+                gameModeButton.setText("Játékmód: Arcade");
                 break;
             }
             default:{
-                gameModeButton.setText("Játékmód: MODE2");
+                gameModeButton.setText("Játékmód: Zen");
                 break;
             }
         }

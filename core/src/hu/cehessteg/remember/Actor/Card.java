@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.ArrayList;
 
+import hu.cehessteg.remember.CardMethods;
 import hu.cehessteg.remember.Stage.CardStage;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
@@ -18,6 +19,8 @@ import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleBodyType;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorld;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
 
+import static hu.cehessteg.remember.Stage.CardStage.isAct;
+import static hu.cehessteg.remember.Stage.CardStage.isGameOver;
 import static hu.cehessteg.remember.Stage.CardStage.isShuffling;
 
 public class Card extends OneSpriteStaticActor {
@@ -35,8 +38,9 @@ public class Card extends OneSpriteStaticActor {
     public Vector2 koordinatak;
     public CardType type;
     private int id;
+    private CardMethods cardMethods;
 
-    public Card(MyGame game, Vector2 koordinatak, SimpleWorld world, CardType cardType) {
+    public Card(MyGame game, Vector2 koordinatak, SimpleWorld world, CardType cardType, CardMethods cardMethods) {
         super(game, "pic/kartyaHatlap.png");
 
         this.koordinatak = koordinatak;
@@ -44,18 +48,22 @@ public class Card extends OneSpriteStaticActor {
         this.id = (int) (koordinatak.x+koordinatak.y*CardStage.matrix.x);
         this.isSelected = false;
         this.type = cardType;
+        this.cardMethods = cardMethods;
 
         setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
         setSize(getWidth()*0.0025f,getHeight()*0.0025f);
         setPosition(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight());
         setColor(getRandomColor());
+        setColor(getColor().r,getColor().g,getColor().b,0.5f);
 
         addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if(!isShuffling) {
-                    Card.this.isSelected = !Card.this.isSelected;
-                    flipCard();
+                if(isAct && !isGameOver && getColor().a!=0) {
+                    if (!isShuffling) {
+                        Card.this.isSelected = !Card.this.isSelected;
+                        flipCard();
+                    }
                 }
                 super.touchUp(event, x, y, pointer, button);
             }
@@ -70,6 +78,7 @@ public class Card extends OneSpriteStaticActor {
     public void deSelect(){
         isSelected = false;
         ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
+        ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,0.5f);
     }
 
     private void flipCard(){
@@ -78,13 +87,14 @@ public class Card extends OneSpriteStaticActor {
         if(isSelected){
             //JELENJEN MEG AZ ALAKZAT
             //JELENJEN MEG A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorTo(1,1,1,1,1);
-            CardStage.addCard(this);
+            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,1);
+            cardMethods.addCard(this);
         }else{
             //FORDULJON VISSZA A KÁRTYA
             //TŰNJÖN EL A KIJELÖLÉS
             ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
-            CardStage.removeCard(this);
+            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,0.5f);
+            cardMethods.removeCard(this);
         }
         System.out.println(koordinatak);
     }

@@ -16,9 +16,12 @@ import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
 import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
 
 public class CardStage extends SimpleWorldStage {
+    /**
+     * Ezen a stagen csak a kártyák lesznek, semmi más
+     * **/
     public static long score;
 
-    public static Vector2 matrix = new Vector2((int)(Math.random()*5)+3,(int)(Math.random()*3)+3);
+    public static Vector2 matrix = new Vector2(6,6);
     public static ArrayList<Card> kartyak;
     static ArrayList<Card> selectedCards;
 
@@ -28,6 +31,18 @@ public class CardStage extends SimpleWorldStage {
 
     public CardStage(MyGame game) {
         super(new ResponseViewport(9), game);
+        generateCards();
+        centerStage();
+        addTimer(new TickTimer(2,true, new TickTimerListener(){
+            @Override
+            public void onTick(Timer sender, float correction) {
+                super.onTick(sender, correction);
+                shuffleTwoCards();
+            }
+        }));
+    }
+
+    private void generateCards(){
         isShuffling = false;
         kartyak = new ArrayList<Card>();
         selectedCards = new ArrayList<Card>();
@@ -49,14 +64,13 @@ public class CardStage extends SimpleWorldStage {
         for (Card c : kartyak) {
             addActor(c);
         }
+    }
 
-        addTimer(new TickTimer(2,true, new TickTimerListener(){
-            @Override
-            public void onTick(Timer sender, float correction) {
-                super.onTick(sender, correction);
-                shuffleTwoCards();
-            }
-        }));
+    private void centerStage(){
+        float width = matrix.x*kartyak.get(0).getWidth()+(kartyak.get(1).getX()-kartyak.get(0).getX()-kartyak.get(0).getWidth())*matrix.x;
+        float height = matrix.y*kartyak.get(0).getHeight()*1.05f;
+        getViewport().setScreenX((int) (getViewport().getScreenWidth()/2-(getViewport().getScreenWidth()/getViewport().getWorldWidth())*(width/2)));
+        getViewport().setScreenY((int) (-(getViewport().getScreenHeight()/getViewport().getWorldHeight())*(getViewport().getWorldHeight() / 2 - height/2)));
     }
 
     //Összes kártyát átforgatja

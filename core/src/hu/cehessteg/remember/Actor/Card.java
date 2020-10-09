@@ -12,10 +12,13 @@ import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.ResponseViewport;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.ShapeType;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleBodyType;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorld;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
+
+import static hu.cehessteg.remember.Stage.CardStage.isShuffling;
 
 public class Card extends OneSpriteStaticActor {
     static ArrayList<String> kartyaTextures = new ArrayList<String>(){};
@@ -50,11 +53,18 @@ public class Card extends OneSpriteStaticActor {
         addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Card.this.isSelected = !Card.this.isSelected;
-                flipCard();
+                if(!isShuffling) {
+                    Card.this.isSelected = !Card.this.isSelected;
+                    flipCard();
+                }
                 super.touchUp(event, x, y, pointer, button);
             }
         });
+    }
+
+    public void setKoordinatak(Vector2 newKoordinatak){
+        koordinatak = newKoordinatak;
+        ((SimpleWorldHelper)getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight(),5, PositionRule.LeftBottom);
     }
 
     public void deSelect(){

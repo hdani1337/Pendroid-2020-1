@@ -24,9 +24,11 @@ public class CardStage extends SimpleWorldStage {
 
     public static boolean isAct;
     public static boolean isGameOver;
+    public static boolean isShuffling;
 
     public CardStage(MyGame game) {
         super(new ResponseViewport(9), game);
+        isShuffling = false;
         kartyak = new ArrayList<Card>();
         selectedCards = new ArrayList<Card>();
 
@@ -34,7 +36,6 @@ public class CardStage extends SimpleWorldStage {
         for (int i = 0; i < (matrix.x*matrix.y)/2; i++) {
             types.add(CardType.values()[i]);
             types.add(CardType.values()[i]);
-            System.out.println(types);
         }
 
         for (byte y = 0; y < matrix.y; y++) {
@@ -49,16 +50,18 @@ public class CardStage extends SimpleWorldStage {
             addActor(c);
         }
 
-        addTimer(new TickTimer(3,true,new TickTimerListener(){
+        addTimer(new TickTimer(2,true, new TickTimerListener(){
             @Override
             public void onTick(Timer sender, float correction) {
                 super.onTick(sender, correction);
-                shuffleCards();
+                shuffleTwoCards();
             }
         }));
     }
 
+    //Összes kártyát átforgatja
     private void shuffleCards(){
+        isShuffling = true;
         ArrayList<Integer> randomIDs = new ArrayList<>();
         ArrayList<Card> shuffledCards = new ArrayList<>();
         while (randomIDs.size() < kartyak.size()){
@@ -86,6 +89,25 @@ public class CardStage extends SimpleWorldStage {
         for (int i = 0; i < shuffledCards.size(); i++){
             ((SimpleWorldHelper)kartyak.get(i).getActorWorldHelper()).getBody().moveToFixSpeed(shuffledCards.get(i).getX(),shuffledCards.get(i).getY(),5,PositionRule.LeftBottom);
         }
+        isShuffling = false;
+    }
+
+    private void shuffleTwoCards(){
+        isShuffling = true;
+        ArrayList<Integer> randomIDs = new ArrayList<>();
+        ArrayList<Vector2> newKoordinatak = new ArrayList<>();
+        while (randomIDs.size() < 2){
+            int newSzam = (int) (Math.random()*kartyak.size());
+            if(!randomIDs.contains(newSzam))
+                randomIDs.add(newSzam);
+        }
+
+        for (int i : randomIDs)
+            newKoordinatak.add(kartyak.get(i).koordinatak);
+
+        kartyak.get(randomIDs.get(0)).setKoordinatak(newKoordinatak.get(1));
+        kartyak.get(randomIDs.get(1)).setKoordinatak(newKoordinatak.get(0));
+        isShuffling = false;
     }
 
     public static void addCard(Card card) {

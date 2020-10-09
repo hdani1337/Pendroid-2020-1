@@ -47,7 +47,7 @@ public class IntroStage extends PrettyStage {
         csanyLogo = new OneSpriteStaticActor(game, CSANY_TEXTURE);
         csapatLogo = new OneSpriteStaticActor(game, CSAPAT_TEXTURE);
 
-        copyright = new MyLabel(game,"Copyright [ÉVSZÁM] [CSAPATNÉV]. Minden jog fenntartva.", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
+        copyright = new MyLabel(game,"Copyright 2020 Céhessteg. Minden jog fenntartva.", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
             @Override
             public void init() {
                 setFontScale(1);

@@ -28,7 +28,7 @@ public class CardStage extends SimpleWorldStage {
     public float scoreTimer;
     public float lastFoundTime;
 
-    public static Vector2 matrix = new Vector2((int)(Math.random()*5)+3,(int)(Math.random()*3)+3);
+    public static Vector2 matrix = new Vector2((int)(Math.random()*3)+3,(int)(Math.random()*3)+3);
     public static ArrayList<Card> kartyak;
     public ArrayList<Card> selectedCards;
 
@@ -46,9 +46,9 @@ public class CardStage extends SimpleWorldStage {
         centerStage();
         if(difficulty > 1) {
             //1: KÖNNYŰ -   NEM CSERÉL KÁRTYÁT
-            //2: NORMÁL -   12 MÁSODPERCENKÉNT CSERÉL 2 KÁRTYÁT
+            //2: NORMÁL -   9 MÁSODPERCENKÉNT CSERÉL 2 KÁRTYÁT
             //3: NEHÉZ  -   6 MÁSODPERCENKÉNT CSERÉL 4 KÁRTYÁT
-            addTimer(new TickTimer(24/difficulty, true, new TickTimerListener() {
+            addTimer(new TickTimer(18/difficulty, true, new TickTimerListener() {
                 @Override
                 public void onTick(Timer sender, float correction) {
                     super.onTick(sender, correction);
@@ -63,8 +63,8 @@ public class CardStage extends SimpleWorldStage {
             public void onRepeat(TickTimer sender) {
                 super.onRepeat(sender);
                 if(isAct && !isGameOver) {
-                    if(gamemode == 1) time++;
-                    else time--;
+                    if(gamemode == 1) time--;
+                    else time++;
                 }
             }
         }));
@@ -80,7 +80,7 @@ public class CardStage extends SimpleWorldStage {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if(gamemode == 1) scoreTimer+=delta;
-        else scoreTimer-=delta;
+        if(gamemode == 1) scoreTimer-=delta;
+        else scoreTimer+=delta;
     }
 }

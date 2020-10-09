@@ -133,6 +133,10 @@ public class Card extends OneSpriteStaticActor {
                 return Color.CORAL;
             case TIZENHAT:
                 return Color.FIREBRICK;
+            case TIZENHET:
+                return Color.MAROON;
+            case TIZENNYOLC:
+                return Color.OLIVE;
             default:
                 return Color.GRAY;
         }

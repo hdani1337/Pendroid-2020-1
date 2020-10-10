@@ -30,7 +30,7 @@ public class CardStage extends SimpleWorldStage {
     public static long score;//Globális pontszámláló
     public float scoreTimer;//Publikus időszámláló pontszámláshoz (pontos), jelenlegi idő
     public float lastFoundTime;//Publikus időszámláló pontszámláshoz (pontos), legutóbbi pár megtalálásának ideje
-    public int level;//Publikus szintszámláló
+    public static int level;//Globális szintszámláló
 
     /**
      * MARTIX
@@ -51,9 +51,9 @@ public class CardStage extends SimpleWorldStage {
         super(new ResponseViewport(9), game);
         level = 0;//Szint nullázása
         checkDifficulty();
-        if(gamemode == 1) time = 150;//Ha árkád módban vagyunk, akkor 150 másodperc áll rendelkezésre a játékmenetre
         cardMethods = new CardMethods(this);//Kártya metódus osztály példányosítása
         cardMethods.nullEverything();//Minden érték alapértelmezettre állítása
+        if(gamemode == 1) time = 151;//Ha árkád módban vagyunk, akkor 150 másodperc áll rendelkezésre a játékmenetre
         newCardset(false);
         setTimers();
     }
@@ -96,17 +96,25 @@ public class CardStage extends SimpleWorldStage {
         }
     }
 
-    /**Függvény a mátrix új méretéhez, ami egyenesen arányos a nehézséggel és a szinttel**/
+    /**Fix méret: Kiválasztott méret beállítása
+     * Random méret: Függvény a mátrix új méretéhez, ami egyenesen arányos a nehézséggel és a szinttel
+     * **/
     private void generateNewMatrix(){
         matrix = new Vector2();
-        int width = (int) (2 + 5 / (5 - (level * difficulty) / 4.0f));
-        int height = (int) (2 + 3 / (3 - (level * difficulty) / 6.0f));
 
-        if(width > 8) width = 8;
-        if(height > 6) height = 6;
+        if(OptionsStage.size == 0) {
+            int width = (int) (2 + 5 / (5 - (level * difficulty) / 4.0f));
+            int height = (int) (2 + 3 / (3 - (level * difficulty) / 6.0f));
 
-        matrix.x = width;
-        matrix.y = height;
+            if (width > 8) width = 8;
+            if (height > 6) height = 6;
+
+            matrix.x = width;
+            matrix.y = height;
+        }else{
+            matrix.x = OptionsStage.size/10;
+            matrix.y = OptionsStage.size%10;
+        }
     }
 
     /**Timerek beállítása**/

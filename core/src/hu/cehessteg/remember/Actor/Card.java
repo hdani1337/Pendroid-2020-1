@@ -77,7 +77,13 @@ public class Card extends OneSpriteStaticActor {
             public void onStop(Timer sender) {
                 super.onStop(sender);
                 ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,1,1,1,1);
-                isShowing = false;
+                addTimer(new TickTimer(1,false,new TickTimerListener(){
+                    @Override
+                    public void onStop(Timer sender) {
+                        super.onStop(sender);
+                        isShowing = false;
+                    }
+                }));
             }
         }));
 

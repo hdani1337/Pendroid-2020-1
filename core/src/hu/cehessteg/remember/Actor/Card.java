@@ -18,10 +18,14 @@ import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.ShapeType;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleBodyType;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorld;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
+import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimer;
+import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
+import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
 
 import static hu.cehessteg.remember.Stage.CardStage.isAct;
 import static hu.cehessteg.remember.Stage.CardStage.isGameOver;
 import static hu.cehessteg.remember.Stage.CardStage.isShuffling;
+import static hu.cehessteg.remember.Stage.OptionsStage.difficulty;
 
 public class Card extends OneSpriteStaticActor {
     static ArrayList<String> kartyaTextures = new ArrayList<String>(){};
@@ -33,35 +37,56 @@ public class Card extends OneSpriteStaticActor {
         assetList.addTexture(kartyaHatoldal);
     }
 
-    private SimpleWorld world;
-    public boolean isSelected;
-    public Vector2 koordinatak;
-    public CardType type;
-    private int id;
-    private CardMethods cardMethods;
+    public boolean isSelected;//Ki van e választva a kártya
+    public Vector2 koordinatak;//A kártya koordinátái a mátrixban
+    public CardType type;//A kártya típusa
+    private int id;//A kártya azonosítója, egyelőre nincs használatban
+    private CardMethods cardMethods;//Kártya metódusok osztály példánya
+    public boolean isShowing;//Látszik e a kártya típusa
+    private Color randomColor;//A kártya random színe, deprecated lesz
+    private int cheats;//Csalások száma
 
     public Card(MyGame game, Vector2 koordinatak, SimpleWorld world, CardType cardType, CardMethods cardMethods) {
         super(game, "pic/kartyaHatlap.png");
-
         this.koordinatak = koordinatak;
-        this.world = world;
         this.id = (int) (koordinatak.x+koordinatak.y*CardStage.matrix.x);
         this.isSelected = false;
         this.type = cardType;
         this.cardMethods = cardMethods;
+        this.randomColor = getRandomColor();
+        basicStuff(world);
+        addTimers();
+    }
 
+    /**Alap dolgok beállítása, mint a méret, pozíció, WorldHelper, szín, átmenettel való megjelenés**/
+    private void basicStuff(SimpleWorld world){
         setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
         setSize(getWidth()*0.0025f,getHeight()*0.0025f);
         setPosition(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight());
         setColor(0,0,0,0);
-        Color randomColor = getRandomColor();
-        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,randomColor.r,randomColor.g,randomColor.b,0.5f);
+        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,randomColor.r,randomColor.g,randomColor.b,1);
+    }
 
+    /**Timerek hozzáadása**/
+    private void addTimers(){
+        isShowing = true;
+
+        /**Nehézség számával fordítottan arányos ideig jelenjenek meg a kártyák**/
+        addTimer(new TickTimer(6-difficulty,false,new TickTimerListener(){
+            @Override
+            public void onStop(Timer sender) {
+                super.onStop(sender);
+                ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,1,1,1,1);
+                isShowing = false;
+            }
+        }));
+
+        /**Kártya kiválasztása**/
         addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if(isAct && !isGameOver && getColor().a!=0) {
-                    if (!isShuffling) {
+                    if (!isShuffling && !isShowing) {
                         Card.this.isSelected = !Card.this.isSelected;
                         flipCard();
                     }
@@ -71,34 +96,52 @@ public class Card extends OneSpriteStaticActor {
         });
     }
 
+    /**Új koordináta beállítása
+     * Átmenettel oda is helyezi magát a kártya
+     * **/
     public void setKoordinatak(Vector2 newKoordinatak){
         koordinatak = newKoordinatak;
         ((SimpleWorldHelper)getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight(),5, PositionRule.LeftBottom);
     }
 
+    /**Kiválasztás megszüntetése egyezésvizsgálatnál**/
     public void deSelect(){
         isSelected = false;
-        ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
-        ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,0.5f);
+        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,1);
     }
 
+    /**A kártya forgatása**/
     private void flipCard(){
         //KÁRTYA MEGFORDÍTÁSA
         //LEGYEN VALAMI KÖRALAKJA ÉS HANGJA
         if(isSelected){
             //JELENJEN MEG AZ ALAKZAT
             //JELENJEN MEG A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,1);
-            cardMethods.addCard(this);
+            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,randomColor.r,randomColor.g,randomColor.b,1);
+            addTimer(new TickTimer(0.5f,false,new TickTimerListener(){
+                @Override
+                public void onStop(Timer sender) {
+                    super.onStop(sender);
+                    cardMethods.addCard(Card.this);
+                }
+            }));
         }else{
             //FORDULJON VISSZA A KÁRTYA
             //TŰNJÖN EL A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getRandomColor());
-            ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,0.5f);
+            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,1);
             cardMethods.removeCard(this);
+
+            /**Ha visszavonja a kiválasztást, akkor növelünk egy számlálót
+             * Ha ez a számláló páratlan, akkor levonunk valamennyi pontot a nehézség függvényében egy kis véletlenszerűséggel keverve
+             * Így csalhat a játékos, mivel látja a kártya típusait
+             * **/
+            if(cheats++%2==1) CardStage.score-=difficulty*7*(Math.random()*1+1);
         }
     }
 
+    /**A kártya típusa alapján ad vissza színt
+     * Ezt majd a textúra fogja helyettesíteni
+     * **/
     private Color getRandomColor(){
         switch (type){
             case EGY:

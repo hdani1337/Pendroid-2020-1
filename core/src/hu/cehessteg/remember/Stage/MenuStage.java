@@ -17,7 +17,6 @@ import hu.cehessteg.remember.Screen.GameScreen;
 import hu.cehessteg.remember.Screen.InfoScreen;
 import hu.cehessteg.remember.Screen.MenuScreen;
 import hu.cehessteg.remember.Screen.OptionsScreen;
-import hu.cehessteg.remember.Screen.ShopScreen;
 
 import static hu.cehessteg.remember.MemoryGame.muted;
 import static hu.cehessteg.remember.SoundManager.kezdesHang;
@@ -39,7 +38,6 @@ public class MenuStage extends PrettyStage {
     private Logo logo;
     private TextBox start;
     private TextBox info;
-    private TextBox shop;
     private TextBox options;
     private TextBox exit;
     private TextBox version;
@@ -50,7 +48,6 @@ public class MenuStage extends PrettyStage {
         logo = new Logo(game, Logo.LogoType.MENU);
         start = new TextBox(game ,"A játék indítása",1.25f);
         info = new TextBox(game, "A játékról",1.25f);
-        shop = new TextBox(game, "Bolt",1.25f);
         options = new TextBox(game, "Beállítások",1.25f);
         exit = new TextBox(game, "Kilépés",1.25f);
         version = new TextBox(game, "Verzió: 1.0 Alpha");
@@ -62,6 +59,7 @@ public class MenuStage extends PrettyStage {
         version.setWidth(version.getWidth()*0.9f);
         start.setWidth(start.getWidth()*0.95f);
         if(getViewport().getWorldWidth() > bg.getWidth()) bg.setWidth(getViewport().getWorldWidth());
+        if(getViewport().getWorldHeight() > bg.getHeight()) bg.setHeight(getViewport().getWorldHeight());
     }
 
     @Override
@@ -76,10 +74,7 @@ public class MenuStage extends PrettyStage {
         info.setY(start.getY() - info.getHeight()*1.5f);
         info.setX((getViewport().getWorldWidth()/2 - info.getWidth()/2));
 
-        shop.setY(info.getY() - shop.getHeight()*1.5f);
-        shop.setX((getViewport().getWorldWidth()/2 - shop.getWidth()/2));
-
-        options.setY(shop.getY() - options.getHeight()*1.5f);
+        options.setY(info.getY() - options.getHeight()*1.5f);
         options.setX((getViewport().getWorldWidth()/2 - options.getWidth()/2));
 
         exit.setY(options.getY() - exit.getHeight()*1.5f);
@@ -115,20 +110,6 @@ public class MenuStage extends PrettyStage {
                     public void onTick(Timer sender, float correction) {
                         super.onTick(sender, correction);
                         game.setScreenWithPreloadAssets(InfoScreen.class, new LoadingStage(game));
-                    }
-                }));
-            }
-        });
-
-        shop.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                fadeOut = true;
-                addTimer(new TickTimer(0.3f, false, new TickTimerListener(){
-                    @Override
-                    public void onTick(Timer sender, float correction) {
-                        super.onTick(sender, correction);
-                        game.setScreenWithPreloadAssets(ShopScreen.class, new LoadingStage(game));
                     }
                 }));
             }
@@ -177,7 +158,6 @@ public class MenuStage extends PrettyStage {
         addActor(logo);
         addActor(start);
         addActor(info);
-        addActor(shop);
         addActor(options);
         addActor(exit);
         addActor(version);
@@ -226,7 +206,6 @@ public class MenuStage extends PrettyStage {
         logo.setAlpha(alpha);
         start.setAlpha(alpha);
         info.setAlpha(alpha);
-        shop.setAlpha(alpha);
         options.setAlpha(alpha);
         exit.setAlpha(alpha);
         version.setAlpha(alpha);

@@ -79,6 +79,7 @@ public class OptionsStage extends PrettyStage {
     @Override
     public void setSizes() {
         if(getViewport().getWorldWidth() > MenuBackground.getWidth()) MenuBackground.setWidth(getViewport().getWorldWidth());
+        if(getViewport().getWorldHeight() > MenuBackground.getHeight()) MenuBackground.setHeight(getViewport().getWorldHeight());
     }
 
     @Override
@@ -150,7 +151,7 @@ public class OptionsStage extends PrettyStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                if(difficulty == 3){
+                if(difficulty == 4){
                     difficulty = 1;
                 }
                 else{
@@ -238,6 +239,10 @@ public class OptionsStage extends PrettyStage {
             }
             case 3:{
                 difficultyButton.setText("Nehézség: Nehéz");
+                break;
+            }
+            case 4:{
+                difficultyButton.setText("Nehézség: Lehetetlen");
                 break;
             }
             default:{
@@ -345,7 +350,7 @@ public class OptionsStage extends PrettyStage {
      * Háttér átlátszóságát állítja be
      * **/
     private void setBackgroundAlpha(){
-        if(bgAlpha>0.25 && !setBack){
+        if(bgAlpha>0.65 && !setBack){
             bgAlpha-=0.025;
             MenuBackground.setAlpha(bgAlpha);
         }

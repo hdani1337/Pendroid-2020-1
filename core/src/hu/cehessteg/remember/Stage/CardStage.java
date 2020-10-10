@@ -98,6 +98,7 @@ public class CardStage extends SimpleWorldStage {
 
     /**Függvény a mátrix új méretéhez, ami egyenesen arányos a nehézséggel és a szinttel**/
     private void generateNewMatrix(){
+        matrix = new Vector2();
         int width = (int) (2 + 5 / (5 - (level * difficulty) / 4.0f));
         int height = (int) (2 + 3 / (3 - (level * difficulty) / 6.0f));
 
@@ -115,13 +116,18 @@ public class CardStage extends SimpleWorldStage {
             //1: KÖNNYŰ -   NEM CSERÉL KÁRTYÁT
             //2: NORMÁL -   9 MÁSODPERCENKÉNT CSERÉL 2 KÁRTYÁT
             //3: NEHÉZ  -   6 MÁSODPERCENKÉNT CSERÉL 4 KÁRTYÁT
+            //4: LEHETETLEN - 4.5 MÁSODPERCENKÉNT AZ ÖSSZESET MEGCSERÉLI
             addTimer(new TickTimer(18/difficulty, true, new TickTimerListener() {
                 @Override
                 public void onTick(Timer sender, float correction) {
                     super.onTick(sender, correction);
-                    if(isAct && !isGameOver && !kartyak.get(0).isShowing)
-                        for (int i = 1; i < difficulty; i++)
-                            cardMethods.shuffleTwoCards();
+                    if(isAct && !isGameOver && !kartyak.get(0).isShowing) {
+                        if (difficulty == 4)
+                            cardMethods.shuffleCards();
+                        else
+                            for (int i = 1; i < difficulty; i++)
+                                cardMethods.shuffleTwoCards();
+                    }
                 }
             }));
         }

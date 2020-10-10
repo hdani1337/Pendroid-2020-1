@@ -153,8 +153,8 @@ public class PauseStage extends PrettyStage {
 
     private void pause(Music music){
         if(getScreen() != null && (getScreen() instanceof GameScreen)){
-            if(!pontok.text.equals("Jelenlegi időd\n"+CardStage.time)) {
-                pontok.setText("Jelenlegi időd\n"+CardStage.time);
+            if(!pontok.text.equals("Jelenlegi pontszámod\n"+CardStage.score)) {
+                pontok.setText("Jelenlegi pontszámod\n"+CardStage.score);
                 pontok.setX(getViewport().getWorldWidth()/2-pontok.getWidth()/2);
             }
         }

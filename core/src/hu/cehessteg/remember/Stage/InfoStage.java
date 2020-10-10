@@ -58,6 +58,7 @@ public class InfoStage extends PrettyStage {
     @Override
     public void setSizes() {
         if(getViewport().getWorldWidth() > bg.getWidth()) bg.setWidth(getViewport().getWorldWidth());
+        if(getViewport().getWorldHeight() > bg.getHeight()) bg.setHeight(getViewport().getWorldHeight());
         infoLogo.setSize(infoLogo.getWidth()*0.9f,infoLogo.getHeight()*0.9f);
     }
 
@@ -154,7 +155,7 @@ public class InfoStage extends PrettyStage {
             }
         }
 
-        if(bgAlpha>0.25 && !setBack){
+        if(bgAlpha>0.65 && !setBack){
             bgAlpha-=0.025;
             bg.setAlpha(bgAlpha);
         }

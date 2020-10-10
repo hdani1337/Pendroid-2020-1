@@ -45,6 +45,7 @@ public class CardMethods {
     //Minden érték alaphelyzetre állítása
     public void nullEverything(){
         cardStage.score = 0;
+        cardStage.time = 0;
         cardStage.scoreTimer = 0;
         cardStage.lastFoundTime = 0;
         cardStage.isAct = true;

@@ -59,6 +59,7 @@ public class IntroStage extends PrettyStage {
     @Override
     public void setSizes() {
         if(getViewport().getWorldWidth() > bg.getWidth()) bg.setWidth(getViewport().getWorldWidth());
+        if(getViewport().getWorldHeight() > bg.getHeight()) bg.setHeight(getViewport().getWorldHeight());
     }
 
     @Override
@@ -159,6 +160,7 @@ public class IntroStage extends PrettyStage {
         }
 
         if(elapsedTime > 6) {
+            csapatLogo.remove();
             game.setScreenWithPreloadAssets(MenuScreen.class, true, new LoadingStage(game));
         }
     }

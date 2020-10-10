@@ -153,6 +153,7 @@ public class GameOverStage extends PrettyStage {
     private float alpha;
     private boolean addedActors;
     private void makeStage(){
+        if(CardStage.time<0) info.setText("Lejárt az idő!");
         pontok.setText("Elért pontszámod\n"+CardStage.score);
         setPositions();
 

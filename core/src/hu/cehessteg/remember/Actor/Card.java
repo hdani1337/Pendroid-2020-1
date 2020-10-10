@@ -53,8 +53,9 @@ public class Card extends OneSpriteStaticActor {
         setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
         setSize(getWidth()*0.0025f,getHeight()*0.0025f);
         setPosition(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight());
-        setColor(getRandomColor());
-        setColor(getColor().r,getColor().g,getColor().b,0.5f);
+        setColor(0,0,0,0);
+        Color randomColor = getRandomColor();
+        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,randomColor.r,randomColor.g,randomColor.b,0.5f);
 
         addListener(new ClickListener(){
             @Override
@@ -96,7 +97,6 @@ public class Card extends OneSpriteStaticActor {
             ((SimpleWorldHelper)getActorWorldHelper()).actor.setColor(getColor().r,getColor().g,getColor().b,0.5f);
             cardMethods.removeCard(this);
         }
-        System.out.println(koordinatak);
     }
 
     private Color getRandomColor(){

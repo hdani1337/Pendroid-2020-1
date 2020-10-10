@@ -12,6 +12,8 @@ import hu.csanyzeg.master.MyBaseClasses.Scene2D.ResponseViewport;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldStage;
+import hu.csanyzeg.master.MyBaseClasses.Timers.PermanentTimer;
+import hu.csanyzeg.master.MyBaseClasses.Timers.PermanentTimerListener;
 import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimer;
 import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
 import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
@@ -27,6 +29,7 @@ public class CardStage extends SimpleWorldStage {
     public static long score;
     public float scoreTimer;
     public float lastFoundTime;
+    public int level;
 
     public static Vector2 matrix = new Vector2((int)(Math.random()*3)+3,(int)(Math.random()*3)+3);
     public static ArrayList<Card> kartyak;
@@ -40,10 +43,47 @@ public class CardStage extends SimpleWorldStage {
 
     public CardStage(MyGame game) {
         super(new ResponseViewport(9), game);
-        time = 90;
+        level = 0;
+        matrix = new Vector2((int)(Math.random()*3)+3,(int)(Math.random()*3)+3);
+        if(gamemode == 1) time = 90-(level*difficulty*3);
         cardMethods = new CardMethods(this);
-        cardMethods.generateCards(world);
-        centerStage();
+        cardMethods.nullEverything();
+        newCardset(false);
+        setTimers();
+    }
+
+    /**Középre helyezi a kártyákat a stage mozgatásával**/
+    private void centerStage(){
+        float width = matrix.x*kartyak.get(0).getWidth()+(kartyak.get(1).getX()-kartyak.get(0).getX()-kartyak.get(0).getWidth())*matrix.x;
+        float height = matrix.y*kartyak.get(0).getHeight()*1.05f;
+        getViewport().setScreenX((int) (getViewport().getScreenWidth()/2-(getViewport().getScreenWidth()/getViewport().getWorldWidth())*(width/2)));
+        getViewport().setScreenY((int) (-(getViewport().getScreenHeight()/getViewport().getWorldHeight())*(getViewport().getWorldHeight() / 2 - height/2)));
+    }
+
+    /**
+     * Új kártyapakli generálása és középre helyezés (másfél másodperces késéssel)
+     * @param needTimer Kell e késleltetés az új pakli létrehozásához
+     * **/
+    public void newCardset(boolean needTimer){
+        matrix = new Vector2((int)(Math.random()*3)+3,(int)(Math.random()*3)+3);
+        if(needTimer) {
+            addTimer(new TickTimer(1.5f, false, new TickTimerListener() {
+                @Override
+                public void onStop(Timer sender) {
+                    super.onStop(sender);
+                    cardMethods.generateCards(world);
+                    centerStage();
+                }
+            }));
+        }else{
+            cardMethods.generateCards(world);
+            centerStage();
+        }
+    }
+
+    /**Timerek beállítása**/
+    public void setTimers(){
+        //Kártyák cserélése
         if(difficulty > 1) {
             //1: KÖNNYŰ -   NEM CSERÉL KÁRTYÁT
             //2: NORMÁL -   9 MÁSODPERCENKÉNT CSERÉL 2 KÁRTYÁT
@@ -58,29 +98,33 @@ public class CardStage extends SimpleWorldStage {
                 }
             }));
         }
+
+        /**Játékbeli óra léptetése játékmód alapján**/
         addTimer(new TickTimer(1,true,new TickTimerListener(){
             @Override
             public void onRepeat(TickTimer sender) {
                 super.onRepeat(sender);
                 if(isAct && !isGameOver) {
-                    if(gamemode == 1) time--;
+                    if(gamemode == 1) {
+                        time--;
+                        if(time<0){
+                            isAct = false;
+                            isGameOver = true;
+                        }
+                    }
                     else time++;
                 }
             }
         }));
-    }
 
-    private void centerStage(){
-        float width = matrix.x*kartyak.get(0).getWidth()+(kartyak.get(1).getX()-kartyak.get(0).getX()-kartyak.get(0).getWidth())*matrix.x;
-        float height = matrix.y*kartyak.get(0).getHeight()*1.05f;
-        getViewport().setScreenX((int) (getViewport().getScreenWidth()/2-(getViewport().getScreenWidth()/getViewport().getWorldWidth())*(width/2)));
-        getViewport().setScreenY((int) (-(getViewport().getScreenHeight()/getViewport().getWorldHeight())*(getViewport().getWorldHeight() / 2 - height/2)));
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        if(gamemode == 1) scoreTimer-=delta;
-        else scoreTimer+=delta;
+        /**Pontszámláláshoz létrehozott időzítő léptetése képkockánként**/
+        addTimer(new PermanentTimer(new PermanentTimerListener(){
+            @Override
+            public void onTick(PermanentTimer sender, float correction) {
+                super.onTick(sender, correction);
+                if(gamemode == 1) scoreTimer-=correction;
+                else scoreTimer+=correction;
+            }
+        }));
     }
 }

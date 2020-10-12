@@ -11,6 +11,7 @@ import hu.cehessteg.remember.CardMethods;
 import hu.cehessteg.remember.Stage.CardStage;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
+import hu.csanyzeg.master.MyBaseClasses.Scene2D.MyGroup;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.ResponseViewport;
 import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
@@ -27,12 +28,36 @@ import static hu.cehessteg.remember.Stage.CardStage.isGameOver;
 import static hu.cehessteg.remember.Stage.CardStage.isShuffling;
 import static hu.cehessteg.remember.Stage.OptionsStage.difficulty;
 
-public class Card extends OneSpriteStaticActor {
+public class Card extends MyGroup {
     static ArrayList<String> kartyaTextures = new ArrayList<String>(){};
-    static String kartyaHatoldal = "...";
+    static String kartyaHatoldal = "pic/kartyaHatlap.png";
 
     public static AssetList assetList = new AssetList();
     static {
+        kartyaTextures.add("pic/kartyak/android.png");
+        kartyaTextures.add("pic/kartyak/atari.png");
+        kartyaTextures.add("pic/kartyak/billentyuzet.png");
+        kartyaTextures.add("pic/kartyak/cd.png");
+        kartyaTextures.add("pic/kartyak/cpu.png");
+        kartyaTextures.add("pic/kartyak/eger.png");
+        kartyaTextures.add("pic/kartyak/elem.png");
+        kartyaTextures.add("pic/kartyak/ellenallas.png");
+        kartyaTextures.add("pic/kartyak/floppy.png");
+        kartyaTextures.add("pic/kartyak/fules.png");
+        kartyaTextures.add("pic/kartyak/hdd.png");
+        kartyaTextures.add("pic/kartyak/kazetta.png");
+        kartyaTextures.add("pic/kartyak/kirby.png");
+        kartyaTextures.add("pic/kartyak/kondenzator.png");
+        kartyaTextures.add("pic/kartyak/maszk.png");
+        kartyaTextures.add("pic/kartyak/monitor.png");
+        kartyaTextures.add("pic/kartyak/nyilak.png");
+        kartyaTextures.add("pic/kartyak/ram.png");
+        kartyaTextures.add("pic/kartyak/ssd.png");
+        kartyaTextures.add("pic/kartyak/tap.png");
+        kartyaTextures.add("pic/kartyak/tux.png");
+        kartyaTextures.add("pic/kartyak/ventillator.png");
+        kartyaTextures.add("pic/kartyak/windows.png");
+        kartyaTextures.add("pic/kartyak/windows95.png");
         for (String asset : kartyaTextures) assetList.addTexture(asset);
         assetList.addTexture(kartyaHatoldal);
     }
@@ -43,28 +68,40 @@ public class Card extends OneSpriteStaticActor {
     private int id;//A kártya azonosítója, egyelőre nincs használatban
     private CardMethods cardMethods;//Kártya metódusok osztály példánya
     public boolean isShowing;//Látszik e a kártya típusa
-    private Color randomColor;//A kártya random színe, deprecated lesz
     private int cheats;//Csalások száma
 
+    public OneSpriteStaticActor backCard;
+    public OneSpriteStaticActor frontCard;
+
+    private ArrayList<OneSpriteStaticActor> cardBackAndFront;
+
     public Card(MyGame game, Vector2 koordinatak, SimpleWorld world, CardType cardType, CardMethods cardMethods) {
-        super(game, "pic/kartyaHatlap.png");
+        super(game);
         this.koordinatak = koordinatak;
         this.id = (int) (koordinatak.x+koordinatak.y*CardStage.matrix.x);
         this.isSelected = false;
         this.type = cardType;
         this.cardMethods = cardMethods;
-        this.randomColor = getRandomColor();
         basicStuff(world);
         addTimers();
+        addActors();
     }
 
     /**Alap dolgok beállítása, mint a méret, pozíció, WorldHelper, szín, átmenettel való megjelenés**/
     private void basicStuff(SimpleWorld world){
-        setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
-        setSize(getWidth()*0.0025f,getHeight()*0.0025f);
-        setPosition(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight());
-        setColor(0,0,0,0);
-        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,randomColor.r,randomColor.g,randomColor.b,1);
+        cardBackAndFront = new ArrayList<>();
+        frontCard = new OneSpriteStaticActor(game,getRandomTextureHash());
+        backCard = new OneSpriteStaticActor(game,kartyaHatoldal);
+        cardBackAndFront.add(frontCard);
+        cardBackAndFront.add(backCard);
+
+        for (OneSpriteStaticActor c : cardBackAndFront) {
+            c.setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
+            c.setSize(c.getWidth() * 0.0025f, c.getHeight() * 0.0025f);
+            c.setPosition(koordinatak.x * 1.3f, 9 - (koordinatak.y * 1.3f) - getHeight());
+            c.setColor(0, 0, 0, 0);
+            ((SimpleWorldHelper) c.getActorWorldHelper()).getBody().colorToFixTime(1, 1, 1, 1, 1);
+        }
     }
 
     /**Timerek hozzáadása**/
@@ -76,7 +113,7 @@ public class Card extends OneSpriteStaticActor {
             @Override
             public void onStop(Timer sender) {
                 super.onStop(sender);
-                ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(1,1,1,1,1);
+                ((SimpleWorldHelper)frontCard.getActorWorldHelper()).getBody().colorToFixTime(1,1,1,1,0);
                 addTimer(new TickTimer(1,false,new TickTimerListener(){
                     @Override
                     public void onStop(Timer sender) {
@@ -102,18 +139,24 @@ public class Card extends OneSpriteStaticActor {
         });
     }
 
+    private void addActors(){
+        addActor(backCard);
+        addActor(frontCard);
+    }
+
     /**Új koordináta beállítása
      * Átmenettel oda is helyezi magát a kártya
      * **/
     public void setKoordinatak(Vector2 newKoordinatak){
         koordinatak = newKoordinatak;
-        ((SimpleWorldHelper)getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight(),5, PositionRule.LeftBottom);
+        for (OneSpriteStaticActor c : cardBackAndFront)
+            ((SimpleWorldHelper)c.getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight(),5, PositionRule.LeftBottom);
     }
 
     /**Kiválasztás megszüntetése egyezésvizsgálatnál**/
     public void deSelect(){
         isSelected = false;
-        ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,1);
+        ((SimpleWorldHelper)frontCard.getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,0);
     }
 
     /**A kártya forgatása**/
@@ -123,7 +166,7 @@ public class Card extends OneSpriteStaticActor {
         if(isSelected){
             //JELENJEN MEG AZ ALAKZAT
             //JELENJEN MEG A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,randomColor.r,randomColor.g,randomColor.b,1);
+            ((SimpleWorldHelper)frontCard.getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,1);
             addTimer(new TickTimer(0.5f,false,new TickTimerListener(){
                 @Override
                 public void onStop(Timer sender) {
@@ -134,7 +177,7 @@ public class Card extends OneSpriteStaticActor {
         }else{
             //FORDULJON VISSZA A KÁRTYA
             //TŰNJÖN EL A KIJELÖLÉS
-            ((SimpleWorldHelper)getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,1);
+            ((SimpleWorldHelper)frontCard.getActorWorldHelper()).getBody().colorToFixTime(0.3f,1,1,1,0);
             cardMethods.removeCard(this);
 
             /**Ha visszavonja a kiválasztást, akkor növelünk egy számlálót
@@ -145,50 +188,34 @@ public class Card extends OneSpriteStaticActor {
         }
     }
 
-    /**A kártya típusa alapján ad vissza színt
-     * Ezt majd a textúra fogja helyettesíteni
+    /**A kártya típusa alapján ad vissza textúrát
      * **/
-    private Color getRandomColor(){
-        switch (type){
-            case EGY:
-                return Color.BLUE;
-            case KETTO:
-                return Color.BROWN;
-            case HAROM:
-                return Color.GOLD;
-            case NEGY:
-                return Color.RED;
-            case OT:
-                return Color.CYAN;
-            case HAT:
-                return Color.PINK;
-            case HET:
-                return Color.PURPLE;
-            case NYOLC:
-                return Color.LIME;
-            case KILENC:
-                return Color.MAGENTA;
-            case TIZ:
-                return Color.SKY;
-            case TIZENEGY:
-                return Color.SALMON;
-            case TIZENKETTO:
-                return Color.GOLDENROD;
-            case TIZENHAROM:
-                return Color.TAN;
-            case TIZENNEGY:
-                return Color.YELLOW;
-            case TIZENOT:
-                return Color.CORAL;
-            case TIZENHAT:
-                return Color.FIREBRICK;
-            case TIZENHET:
-                return Color.MAROON;
-            case TIZENNYOLC:
-                return Color.OLIVE;
-            default:
-                return Color.GRAY;
-        }
+    private String getRandomTextureHash(){
+        int id = 0;
+        for (CardType c : CardType.values())
+            if(c == type) break;
+            else id++;
+        return kartyaTextures.get(id);
+    }
+
+    @Override
+    public float getX() {
+        return frontCard.getX();
+    }
+
+    @Override
+    public float getY() {
+        return frontCard.getY();
+    }
+
+    @Override
+    public float getWidth() {
+        return frontCard.getWidth();
+    }
+
+    @Override
+    public float getHeight() {
+        return frontCard.getHeight();
     }
 }
 

@@ -128,8 +128,10 @@ public class CardMethods {
             //Ha egyeznek, tűnjenek el, s növelem a pontszámot
             //Minél gyorsabban találja meg a játékos a következő párt, annál több pontot kap
             if(cardStage.selectedCards.get(0).type == cardStage.selectedCards.get(1).type){
-                ((SimpleWorldHelper)cardStage.selectedCards.get(0).getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
-                ((SimpleWorldHelper)cardStage.selectedCards.get(1).getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
+                ((SimpleWorldHelper)cardStage.selectedCards.get(0).frontCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
+                ((SimpleWorldHelper)cardStage.selectedCards.get(0).backCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
+                ((SimpleWorldHelper)cardStage.selectedCards.get(1).frontCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
+                ((SimpleWorldHelper)cardStage.selectedCards.get(1).backCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
                 cardStage.score+= 25*(cardStage.lastFoundTime/cardStage.scoreTimer);
                 cardStage.kartyak.remove(cardStage.selectedCards.get(0));
                 cardStage.kartyak.remove(cardStage.selectedCards.get(1));
@@ -137,8 +139,10 @@ public class CardMethods {
                 cardStage.lastFoundTime = cardStage.scoreTimer;
                 if(cardStage.kartyak.size()<2){
                     //Ha elfogynak a kártyák, lépjünk szintet
-                    for (Card c : cardStage.kartyak)
-                        ((SimpleWorldHelper)c.getActorWorldHelper()).getBody().colorToFixTime(1.25f,0,0,0,0);
+                    for (Card c : cardStage.kartyak) {
+                        ((SimpleWorldHelper) c.frontCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f, 0, 0, 0, 0);
+                        ((SimpleWorldHelper) c.backCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f, 0, 0, 0, 0);
+                    }
                     nextLevel();
                 }
             }else{

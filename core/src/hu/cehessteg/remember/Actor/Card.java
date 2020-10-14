@@ -26,6 +26,7 @@ import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
 import static hu.cehessteg.remember.Stage.CardStage.isAct;
 import static hu.cehessteg.remember.Stage.CardStage.isGameOver;
 import static hu.cehessteg.remember.Stage.CardStage.isShuffling;
+import static hu.cehessteg.remember.Stage.CardStage.matrix;
 import static hu.cehessteg.remember.Stage.OptionsStage.difficulty;
 
 public class Card extends MyGroup {
@@ -94,11 +95,13 @@ public class Card extends MyGroup {
         backCard = new OneSpriteStaticActor(game,kartyaHatoldal);
         cardBackAndFront.add(frontCard);
         cardBackAndFront.add(backCard);
+        int offset = 0;
+        if(matrix.y > matrix.x) offset = (int) (matrix.y-matrix.x);
 
         for (OneSpriteStaticActor c : cardBackAndFront) {
             c.setActorWorldHelper(new SimpleWorldHelper(world, this, ShapeType.Rectangle, SimpleBodyType.Sensor));
-            c.setSize(c.getWidth() * 0.0025f, c.getHeight() * 0.0025f);
-            c.setPosition(koordinatak.x * 1.3f, 9 - (koordinatak.y * 1.3f) - getHeight());
+            c.setSize(c.getWidth() * (0.03f/(matrix.x+matrix.y+offset)), c.getHeight() * (0.03f/(matrix.x+matrix.y+offset)));
+            c.setPosition(koordinatak.x * (16f/(matrix.x+matrix.y+offset)), 9 - (koordinatak.y * (16f/(matrix.x+matrix.y+offset))) - c.getHeight());
             c.setColor(0, 0, 0, 0);
             ((SimpleWorldHelper) c.getActorWorldHelper()).getBody().colorToFixTime(1, 1, 1, 1, 1);
         }
@@ -149,8 +152,10 @@ public class Card extends MyGroup {
      * **/
     public void setKoordinatak(Vector2 newKoordinatak){
         koordinatak = newKoordinatak;
+        int offset = 0;
+        if(matrix.y > matrix.x) offset = (int) (matrix.y-matrix.x);
         for (OneSpriteStaticActor c : cardBackAndFront)
-            ((SimpleWorldHelper)c.getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x*1.3f,9-(koordinatak.y*1.3f)-getHeight(),5, PositionRule.LeftBottom);
+            ((SimpleWorldHelper)c.getActorWorldHelper()).getBody().moveToFixSpeed(koordinatak.x * (16f/(matrix.x+matrix.y+offset)), 9 - (koordinatak.y * (16f/(matrix.x+matrix.y+offset))) - c.getHeight(),5, PositionRule.LeftBottom);
     }
 
     /**Kiválasztás megszüntetése egyezésvizsgálatnál**/

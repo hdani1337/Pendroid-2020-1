@@ -58,32 +58,19 @@ public class CardMethods {
         if(cardStage.kartyak.size()>1) {
             cardStage.isShuffling = true;
             ArrayList<Integer> randomIDs = new ArrayList<>();
-            ArrayList<Card> shuffledCards = new ArrayList<>();
+            ArrayList<Vector2> newKoordinatak = new ArrayList<>();
             while (randomIDs.size() < cardStage.kartyak.size()) {
                 int newSzam = (int) (Math.random() * cardStage.kartyak.size());
                 if (!randomIDs.contains(newSzam))
                     randomIDs.add(newSzam);
             }
 
-            for (int i = 0; i < cardStage.kartyak.size(); i++) {
-                shuffledCards.add(cardStage.kartyak.get(randomIDs.get(i)));
-            }
+            for (int i : randomIDs)
+                newKoordinatak.add(cardStage.kartyak.get(i).koordinatak);
 
-            for (byte y = 0; y < cardStage.matrix.y; y++) {
-                for (byte x = 0; x < cardStage.matrix.x; x++) {
-                    try {
-                        int id = y * x + x;
-                        shuffledCards.get(id).koordinatak = new Vector2(x, y);
-                        cardStage.kartyak.get(id).koordinatak = new Vector2(x, y);
-                    } catch (IndexOutOfBoundsException e) {
-                        System.out.println("(" + cardStage.matrix.x + "," + cardStage.matrix.y + ") helyen nincs kártya!");
-                    }
-                }
-            }
+            for (int i = 0; i < newKoordinatak.size(); i++)
+                cardStage.kartyak.get(i).setKoordinatak(newKoordinatak.get(i));
 
-            for (int i = 0; i < shuffledCards.size(); i++) {
-                ((SimpleWorldHelper) cardStage.kartyak.get(i).getActorWorldHelper()).getBody().moveToFixSpeed(shuffledCards.get(i).getX(), shuffledCards.get(i).getY(), 5, PositionRule.LeftBottom);
-            }
             cardStage.isShuffling = false;
         }
     }

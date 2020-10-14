@@ -4,10 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.ArrayList;
+
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
-import hu.csanyzeg.master.MyBaseClasses.Scene2D.PrettyStage;
+import hu.csanyzeg.master.MyBaseClasses.Scene2D.PrettySimpleStage;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.Direction;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.PositionRule;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.ShapeType;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleBodyType;
+import hu.csanyzeg.master.MyBaseClasses.SimpleWorld.SimpleWorldHelper;
 import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimer;
 import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
 import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
@@ -15,15 +22,19 @@ import hu.cehessteg.remember.Hud.Logo;
 import hu.cehessteg.remember.Hud.TextBox;
 import hu.cehessteg.remember.Screen.GameScreen;
 import hu.cehessteg.remember.Screen.InfoScreen;
-import hu.cehessteg.remember.Screen.MenuScreen;
 import hu.cehessteg.remember.Screen.OptionsScreen;
 
 import static hu.cehessteg.remember.MemoryGame.muted;
 import static hu.cehessteg.remember.SoundManager.kezdesHang;
 import static hu.cehessteg.remember.SoundManager.kilepesHang;
 
-public class MenuStage extends PrettyStage {
+//TODO TEXTÚRÁK BEHELYETTESÍTÉSE HA KÉSZ LESZNEK
+//TODO ESETLEG VALAMI ANIMÁCIÓ A HÁTTÉRBE (KÁRTYÁK UGRÁLNAK, STB)
+
+public class MenuStage extends PrettySimpleStage {
     public static final String MENU_BG_TEXTURE = "pic/backgrounds/menuBg.jpg";
+    public static final String STARTBUTTON_TEXTURE = "pic/gombok/jatek.png";
+    public static final String OPTIONSBUTTON_TEXTURE = "pic/gombok/opciok.png";
 
     public static AssetList assetList = new AssetList();
     static {
@@ -36,30 +47,47 @@ public class MenuStage extends PrettyStage {
     }
 
     private Logo logo;
-    private TextBox start;
-    private TextBox info;
-    private TextBox options;
-    private TextBox exit;
-    private TextBox version;
+    private OneSpriteStaticActor start;
+    private OneSpriteStaticActor info;
+    private OneSpriteStaticActor options;
+    private OneSpriteStaticActor exit;
     private OneSpriteStaticActor bg;
+
+    private ArrayList<OneSpriteStaticActor> menuElements;
 
     @Override
     public void assignment() {
+        menuElements = new ArrayList<>();
         logo = new Logo(game, Logo.LogoType.MENU);
-        start = new TextBox(game ,"A játék indítása",1.25f);
-        info = new TextBox(game, "A játékról",1.25f);
-        options = new TextBox(game, "Beállítások",1.25f);
-        exit = new TextBox(game, "Kilépés",1.25f);
-        version = new TextBox(game, "Verzió: 1.0 Alpha");
+        start = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
+        info = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
+        options = new OneSpriteStaticActor(game, OPTIONSBUTTON_TEXTURE);
+        exit = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
         bg = new OneSpriteStaticActor(game,MENU_BG_TEXTURE);
+
+        menuElements.add(start);
+        menuElements.add(options);
+        menuElements.add(logo);
+        menuElements.add(exit);
+        menuElements.add(info);
+
+        for (OneSpriteStaticActor a : menuElements) {
+            a.setActorWorldHelper(new SimpleWorldHelper(world,a, ShapeType.Rectangle, SimpleBodyType.Sensor));
+            a.setColor(0, 0, 0, 0);
+            ((SimpleWorldHelper) a.getActorWorldHelper()).getBody().colorToFixTime(1, 1, 1, 1, 1);
+        }
     }
 
     @Override
     public void setSizes() {
-        version.setWidth(version.getWidth()*0.9f);
-        start.setWidth(start.getWidth()*0.95f);
-        if(getViewport().getWorldWidth() > bg.getWidth()) bg.setWidth(getViewport().getWorldWidth());
-        if(getViewport().getWorldHeight() > bg.getHeight()) bg.setHeight(getViewport().getWorldHeight());
+        for (OneSpriteStaticActor a : menuElements)
+           if(a != logo)
+               a.setSize(a.getWidth()*0.0025f,a.getHeight()*0.0025f);
+
+        logo.setSize(logo.getWidth()*0.007f,logo.getHeight()*0.007f);
+        bg.setWidth(getViewport().getWorldWidth());
+        bg.setHeight(getViewport().getWorldHeight());
+        logo.setOrigintoCenter();
     }
 
     @Override
@@ -69,19 +97,16 @@ public class MenuStage extends PrettyStage {
         logo.setPosition(getViewport().getWorldWidth()/2-logo.getWidth()/2,getViewport().getWorldHeight()-logo.getHeight()*1.25f);
 
         start.setX(getViewport().getWorldWidth()/2 - start.getWidth()/2);
-        start.setY(getViewport().getWorldHeight()*0.55f - start.getHeight()/2);
+        start.setY(getViewport().getWorldHeight()*0.6f - start.getHeight()/2);
 
-        info.setY(start.getY() - info.getHeight()*1.5f);
+        info.setY(start.getY() - info.getHeight()*1.4f);
         info.setX((getViewport().getWorldWidth()/2 - info.getWidth()/2));
 
-        options.setY(info.getY() - options.getHeight()*1.5f);
+        options.setY(info.getY() - options.getHeight()*1.4f);
         options.setX((getViewport().getWorldWidth()/2 - options.getWidth()/2));
 
-        exit.setY(options.getY() - exit.getHeight()*1.5f);
-        exit.setX((getViewport().getWorldWidth()/2 - exit.getWidth()/2));
-
-        version.setX(40);
-        version.setY(30);
+        exit.setY(exit.getHeight()*0.05f);
+        exit.setX(getViewport().getWorldWidth() - exit.getWidth()*1.05f);
     }
 
     @Override
@@ -89,9 +114,9 @@ public class MenuStage extends PrettyStage {
         start.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                fadeOut = true;
+                animation(start);
                 if(!muted && kezdesHang != null) kezdesHang.play(1);
-                addTimer(new TickTimer(0.3f, false, new TickTimerListener(){
+                addTimer(new TickTimer(0.5f, false, new TickTimerListener(){
                     @Override
                     public void onTick(Timer sender, float correction) {
                         super.onTick(sender, correction);
@@ -104,8 +129,8 @@ public class MenuStage extends PrettyStage {
         info.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                fadeOut = true;
-                addTimer(new TickTimer(0.3f, false, new TickTimerListener(){
+                animation(info);
+                addTimer(new TickTimer(0.5f, false, new TickTimerListener(){
                     @Override
                     public void onTick(Timer sender, float correction) {
                         super.onTick(sender, correction);
@@ -118,8 +143,8 @@ public class MenuStage extends PrettyStage {
         options.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                fadeOut = true;
-                addTimer(new TickTimer(0.3f, false, new TickTimerListener(){
+                animation(options);
+                addTimer(new TickTimer(0.7f, false, new TickTimerListener(){
                     @Override
                     public void onTick(Timer sender, float correction) {
                         super.onTick(sender, correction);
@@ -132,6 +157,11 @@ public class MenuStage extends PrettyStage {
         exit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                for (OneSpriteStaticActor a : menuElements) {
+                    ((SimpleWorldHelper) a.getActorWorldHelper()).getBody().sizeToFixTime(0, 0, 0.5f, PositionRule.Center);
+                    ((SimpleWorldHelper) a.getActorWorldHelper()).getBody().colorToFixTime(0.5f, 1, 1, 1, 0);
+                }
+
                 if(!muted && kilepesHang != null){
                     kilepesHang.play(1);
                 }
@@ -146,6 +176,18 @@ public class MenuStage extends PrettyStage {
         });
     }
 
+    private void animation(OneSpriteStaticActor sender){
+        sender.setOrigintoCenter();
+        ((SimpleWorldHelper)sender.getActorWorldHelper()).getBody().sizeToFixTime(sender.getWidth()*1.5f,sender.getHeight()*1.5f,0.5f, PositionRule.Center);
+        ((SimpleWorldHelper)sender.getActorWorldHelper()).getBody().rotateToFixTime(360,0.5f, Direction.ClockWise);
+        ((SimpleWorldHelper)sender.getActorWorldHelper()).getBody().colorToFixTime(0.6f,1,1,1,0);
+        for (OneSpriteStaticActor a : menuElements)
+            if(a != sender) {
+                ((SimpleWorldHelper) a.getActorWorldHelper()).getBody().sizeToFixTime(0, 0, 0.5f, PositionRule.Center);
+                ((SimpleWorldHelper) a.getActorWorldHelper()).getBody().colorToFixTime(0.5f,1,1,1,0);
+            }
+    }
+
     @Override
     public void setZIndexes() {
 
@@ -153,67 +195,11 @@ public class MenuStage extends PrettyStage {
 
     @Override
     public void addActors() {
-        setAlpha(0);
         addActor(bg);
         addActor(logo);
         addActor(start);
         addActor(info);
         addActor(options);
         addActor(exit);
-        addActor(version);
     }
-
-    //region Act metódusai
-    float alpha = 0;
-    boolean fadeOut = false;
-    boolean fadeIn = true;
-    float time = 0;
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        if(fadeIn) setFadeIn();
-        if(fadeOut) setFadeOut(delta);
-    }
-    //endregion
-    //region Áttűnések metódusai
-    private void setFadeIn(){
-        if (alpha < 0.95) {
-            alpha += 0.05f;
-            setAlpha(alpha);
-        }
-        else {
-            alpha = 1;
-            setAlpha(alpha);
-            fadeIn = false;
-        }
-    }
-
-    private void setFadeOut(float delta){
-        time += delta;
-        if (alpha > 0.05f) {
-            alpha -= 0.05f;
-            setAlpha(alpha);
-        }
-        else {
-            alpha = 0;
-            setAlpha(alpha);
-            fadeOut = false;
-        }
-    }
-
-    private void setAlpha(float alpha){
-        logo.setAlpha(alpha);
-        start.setAlpha(alpha);
-        info.setAlpha(alpha);
-        options.setAlpha(alpha);
-        exit.setAlpha(alpha);
-        version.setAlpha(alpha);
-        if(getScreen() != null){
-            if(getScreen() instanceof MenuScreen){
-
-            }
-        }
-    }
-    //endregion
 }

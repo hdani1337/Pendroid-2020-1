@@ -151,6 +151,7 @@ public class PauseStage extends PrettyStage {
         }
     }
 
+    @Deprecated
     private void pause(Music music){
         if(getScreen() != null && (getScreen() instanceof GameScreen)){
             if(!pontok.text.equals("Jelenlegi pontszámod\n"+CardStage.score)) {
@@ -178,6 +179,7 @@ public class PauseStage extends PrettyStage {
         //Áttűnés vége
     }
 
+    @Deprecated
     private void resume(Music music){
         //Áttűnéssel tűnnek el a stageről
         if(alpha > 0.05f) {

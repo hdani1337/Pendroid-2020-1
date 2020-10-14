@@ -17,6 +17,9 @@ import hu.cehessteg.remember.Hud.TextBox;
 
 import static hu.cehessteg.remember.Stage.MenuStage.MENU_BG_TEXTURE;
 
+//TODO BENCE TERVE ALAPJÁN MEGCSINÁLNI A MENÜPONTOT, MIUTÁN KÉSZEN LESZNEK A TEXTÚRÁK
+//TODO SZÖVEGET FOGALMAZNI
+
 public class InfoStage extends PrettyStage {
     public static AssetList assetList = new AssetList();
     static {

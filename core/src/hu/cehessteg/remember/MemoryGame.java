@@ -25,7 +25,7 @@ public class MemoryGame extends MyGame {
 	public void create() {
 		super.create();
 		setLoadingStage(new LoadingStage(this));
-		setScreen(new GameScreen(this));
+		setScreen(new IntroScreen(this));
 		try {
 			preferences = Gdx.app.getPreferences("frameworkSave");
 			muted = preferences.getBoolean("muted");

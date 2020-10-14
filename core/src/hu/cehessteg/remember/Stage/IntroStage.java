@@ -98,6 +98,7 @@ public class IntroStage extends PrettyStage {
     private byte index = 0;
     private float alpha = 0;
 
+    @Deprecated
     private void fadeIn(OneSpriteStaticActor... actor) {
         if (alpha < 0.95) alpha += 0.05;
         else alpha = 1;
@@ -108,6 +109,7 @@ public class IntroStage extends PrettyStage {
         }
     }
 
+    @Deprecated
     private void fadeOut(OneSpriteStaticActor... actor) {
         if (alpha > 0.05) alpha -= 0.05;
         else {

@@ -39,7 +39,7 @@ public class HudStage extends PrettyStage {
 
     @Override
     public void setSizes() {
-        pause.setSize(180,180);
+        pause.setSize(140,140);
     }
 
     @Override

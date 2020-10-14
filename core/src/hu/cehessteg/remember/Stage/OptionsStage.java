@@ -24,6 +24,8 @@ import static hu.cehessteg.remember.MemoryGame.muted;
 import static hu.cehessteg.remember.MemoryGame.preferences;
 import static hu.cehessteg.remember.Stage.MenuStage.MENU_BG_TEXTURE;
 
+//TODO BENCE TERVE ALAPJÁN MEGCSINÁLNI A MENÜPONTOT, MIUTÁN KÉSZEN LESZNEK A TEXTÚRÁK
+
 public class OptionsStage extends PrettyStage {
     public static AssetList assetList = new AssetList();
     static {

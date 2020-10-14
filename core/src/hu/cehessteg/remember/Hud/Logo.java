@@ -10,7 +10,7 @@ public class Logo extends OneSpriteStaticActor {
     //region AssetList
     public static final String LOGO_TEXTURE = "pic/logos/logo.png";
     public static final String MARANCSHOP_TEXTURE = "pic/logos/marancshop.png";
-    public static final String OPTIONS_TEXTURE = "pic/logos/options.png";
+    public static final String OPTIONS_TEXTURE = "pic/gombok/options.png";
     public static final String INFO_TEXTURE = "pic/logos/info.png";
 
     public static AssetList assetList = new AssetList();
@@ -46,7 +46,7 @@ public class Logo extends OneSpriteStaticActor {
             }
             case OPTIONS:{
                 sprite.setTexture(game.getMyAssetManager().getTexture(OPTIONS_TEXTURE));
-                setSize(game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getWidth()*0.7f,game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getHeight()*0.7f);
+                setSize(game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getWidth()*0.35f,game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getHeight()*0.35f);
                 break;
             }
             case INFO:{

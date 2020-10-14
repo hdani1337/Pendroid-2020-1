@@ -12,7 +12,7 @@ import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
 
 public class Pause extends OneSpriteStaticActor {
     //region AssetList
-    public static final String PAUSE_TEXTURE = "pic/ui/pause.png";
+    public static final String PAUSE_TEXTURE = "pic/gombok/pause.png";
 
     public static AssetList assetList = new AssetList();
     static {

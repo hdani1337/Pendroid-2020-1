@@ -71,7 +71,7 @@ public class CardStage extends SimpleWorldStage {
     private void centerStage(){
         float width = matrix.x*kartyak.get(0).getWidth()+(kartyak.get(1).getX()-kartyak.get(0).getX()-kartyak.get(0).getWidth())*matrix.x;
         float height = matrix.y*kartyak.get(0).getHeight()*1.05f;
-        getViewport().setScreenX((int) (getViewport().getScreenWidth()*0.5f-(getViewport().getScreenWidth()/getViewport().getWorldWidth())*(width/2)));
+        getViewport().setScreenX((int) (getViewport().getScreenWidth()*0.475f-(getViewport().getScreenWidth()/getViewport().getWorldWidth())*(width/2)));
         getViewport().setScreenY((int) (-(getViewport().getScreenHeight()/getViewport().getWorldHeight())*(getViewport().getWorldHeight() / 2 - height/2)));
     }
 

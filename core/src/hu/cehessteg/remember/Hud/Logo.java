@@ -35,6 +35,7 @@ public class Logo extends OneSpriteStaticActor {
         switch (logotype){
             case MENU:{
                 sprite.setTexture(game.getMyAssetManager().getTexture(LOGO_TEXTURE));
+                setSize(game.getMyAssetManager().getTexture(LOGO_TEXTURE).getWidth()*0.35f,game.getMyAssetManager().getTexture(LOGO_TEXTURE).getHeight()*0.35f);
                 break;
             }
             case OPTIONS:{

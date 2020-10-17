@@ -1,7 +1,10 @@
 package hu.cehessteg.remember.Stage;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
@@ -14,17 +17,22 @@ import hu.csanyzeg.master.MyBaseClasses.Timers.TickTimerListener;
 import hu.csanyzeg.master.MyBaseClasses.Timers.Timer;
 import hu.cehessteg.remember.Hud.Logo;
 import hu.cehessteg.remember.Hud.TextBox;
+import hu.csanyzeg.master.MyBaseClasses.UI.MyLabel;
 
+import static hu.cehessteg.remember.Hud.TextBox.RETRO_FONT;
 import static hu.cehessteg.remember.Stage.MenuStage.MENU_BG_TEXTURE;
 
 //TODO BENCE TERVE ALAPJÁN MEGCSINÁLNI A MENÜPONTOT, MIUTÁN KÉSZEN LESZNEK A TEXTÚRÁK
 //TODO SZÖVEGET FOGALMAZNI
 
 public class InfoStage extends PrettyStage {
+    public static String BACKBUTTON_TEXTURE = "pic/gombok/play_kek.png";
+    public static String TEXTBACKGROUND_TEXTURE = "pic/ui/szoveg.png";
+
     public static AssetList assetList = new AssetList();
     static {
-        assetList.collectAssetDescriptor(TextBox.class, assetList);
         assetList.addTexture(MENU_BG_TEXTURE);
+        assetList.addTexture(BACKBUTTON_TEXTURE);
     }
 
     public InfoStage(MyGame game) {
@@ -32,30 +40,42 @@ public class InfoStage extends PrettyStage {
     }
 
     private OneSpriteStaticActor bg;
-    private TextBox back;
+    private OneSpriteStaticActor textBg;
+    private MyLabel text;
+    private OneSpriteStaticActor back;
     private Logo infoLogo;
-
-    private ArrayList<TextBox> textBoxes;
 
     private boolean setBack;
     //endregion
     //region Absztrakt metódusok
     @Override
     public void assignment() {
-        textBoxes = new ArrayList<>();
-        textBoxes.add(new TextBox(game,"Hatodik infódoboz"));
-        textBoxes.add(new TextBox(game,"Ötödik infódoboz"));
-        textBoxes.add(new TextBox(game,"Negyedik infódoboz"));
-        textBoxes.add(new TextBox(game,"Harmadik infódoboz"));
-        textBoxes.add(new TextBox(game,"Második infódoboz"));
-        textBoxes.add(new TextBox(game,"Elsö infódoboz"));
-
         //SoundManager.assign();
         //if(!muted)
         //    SoundManager.menuMusic.play();
         bg = new OneSpriteStaticActor(game,MENU_BG_TEXTURE);
-        back = new TextBox(game, "Vissza a menübe");
+        back = new OneSpriteStaticActor(game, BACKBUTTON_TEXTURE);
+        back.setRotation(180);
+        textBg = new OneSpriteStaticActor(game,TEXTBACKGROUND_TEXTURE);
         infoLogo = new Logo(game, Logo.LogoType.INFO);
+
+        String infoText = "Ez a játék a 2020-ban megrendezett Pendroid verseny 1. fordulójára készült.\n" +
+                "A játék célja az, hogy minél hamarabb megtaláld a kártyák párjait.\n" +
+                "Vigyázz, mert ha tévedsz vagy csalni próbálsz, pontokat fogsz veszteni!\n" +
+                "Ha kihívásra vágysz, az Arcade játékmód lesz a kedvenced, ugyanis ekkor\n" +
+                "mindössze két és fél perc áll rendelkezésedre a játékra, ha pedig csak\n" +
+                "kikapcsolódnál, a Zen módban korlátok nélkül keresgélhetsz.\n" +
+                "Továbbá még eldöntheted, hogy fix paklimérettel szeretnél játszani,\n" +
+                "vagy a nehézség és szint alapján folyamatosan növekedjen.\n" +
+                "Ezeket a paramétereket az Opciók menüpontban adhatod meg.\n" +
+                "\nJó játékot kíván a Céhessteg csapata!";
+
+        text = new MyLabel(game, infoText, new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.BLACK)) {
+            @Override
+            public void init() {
+
+            }
+        };
     }
 
     @Override
@@ -63,13 +83,18 @@ public class InfoStage extends PrettyStage {
         if(getViewport().getWorldWidth() > bg.getWidth()) bg.setWidth(getViewport().getWorldWidth());
         if(getViewport().getWorldHeight() > bg.getHeight()) bg.setHeight(getViewport().getWorldHeight());
         infoLogo.setSize(infoLogo.getWidth()*0.9f,infoLogo.getHeight()*0.9f);
+        textBg.setSize(text.getWidth()+60,text.getHeight()+30);
+        back.setSize(160,160);
     }
 
     @Override
     public void setPositions() {
         if(getViewport().getWorldWidth() < bg.getWidth()) bg.setX((getViewport().getWorldWidth()-bg.getWidth())/2);
-        back.setPosition(getViewport().getWorldWidth() - (back.getWidth() + 45),50);
+        back.setPosition(getViewport().getWorldWidth() - back.getWidth()-16,16);
         infoLogo.setPosition(getViewport().getWorldWidth()/2 - infoLogo.getWidth()/2, getViewport().getWorldHeight() - infoLogo.getHeight()*1.1f);
+        text.setAlignment(Align.center);
+        text.setPosition(getViewport().getWorldWidth()/2-text.getWidth()/2,getViewport().getWorldHeight()/2-text.getHeight()/2-20);
+        textBg.setPosition(text.getX()-30,text.getY()-15);
     }
 
     @Override
@@ -91,24 +116,10 @@ public class InfoStage extends PrettyStage {
     @Override
     public void addActors() {
         addActor(bg);
-        addActor(back);
-
-        for (int i = textBoxes.size()-1; i >= 0; i--) {
-            //Minden párosat a jobboldolra, páratlant a baloldalira
-            if(i%2 == 0) textBoxes.get(i).setX(getViewport().getWorldWidth()+125);
-            else textBoxes.get(i).setX(-textBoxes.get(i).getWidth()-125);
-
-            //A legelsőnek adunk fix pozíciót, a többit pedig az előtte lévőhöz igazítjuk az Y tengelyen
-            if(i == textBoxes.size()-1){
-                textBoxes.get(textBoxes.size()-1).setY(650);
-                addActor(textBoxes.get(textBoxes.size()-1));
-            }else {
-                textBoxes.get(i).setY(textBoxes.get(i + 1).getY() - 12 - textBoxes.get(i).getHeight());
-                addActor(textBoxes.get(i));
-            }
-        }
-
+        addActor(textBg);
+        addActor(text);
         addActor(infoLogo);
+        addActor(back);
     }
     //endregion
     //region Act metódusai
@@ -147,17 +158,6 @@ public class InfoStage extends PrettyStage {
             }
         }
 
-        for (int i = textBoxes.size()-1; i >= 0; i--){
-            if (i % 2 == 0) {
-                if (textBoxes.get(i).getX() > getViewport().getWorldWidth() / 2 - textBoxes.get(i).getWidth() / 2)
-                    textBoxes.get(i).setX(textBoxes.get(i).getX() - 15);
-            }
-            else {
-                if (textBoxes.get(i).getX() < getViewport().getWorldWidth() / 2 - textBoxes.get(i).getWidth() / 2)
-                    textBoxes.get(i).setX(textBoxes.get(i).getX() + 15);
-            }
-        }
-
         if(bgAlpha>0.65 && !setBack){
             bgAlpha-=0.025;
             bg.setAlpha(bgAlpha);
@@ -170,9 +170,8 @@ public class InfoStage extends PrettyStage {
     private void setAlpha(){
         infoLogo.setAlpha(alpha);
         back.setAlpha(alpha);
-        for (TextBox tb : textBoxes) {
-            tb.setAlpha(alpha);
-        }
+        textBg.setAlpha(alpha);
+        text.setColor(0,0,0,alpha);
     }
     //endregion
 }

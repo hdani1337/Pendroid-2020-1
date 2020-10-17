@@ -9,21 +9,19 @@ import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
 public class Logo extends OneSpriteStaticActor {
     //region AssetList
     public static final String LOGO_TEXTURE = "pic/logos/logo.png";
-    public static final String MARANCSHOP_TEXTURE = "pic/logos/marancshop.png";
     public static final String OPTIONS_TEXTURE = "pic/gombok/options.png";
-    public static final String INFO_TEXTURE = "pic/logos/info.png";
+    public static final String INFO_TEXTURE = "pic/gombok/info_i.png";
 
     public static AssetList assetList = new AssetList();
     static {
         assetList.addTexture(LOGO_TEXTURE);
-        assetList.addTexture(MARANCSHOP_TEXTURE);
         assetList.addTexture(OPTIONS_TEXTURE);
         assetList.addTexture(INFO_TEXTURE);
     }
     //endregion
     //region Logo típus Enum
     public enum LogoType{
-        MENU, SHOP, OPTIONS, INFO
+        MENU, OPTIONS, INFO
     }
     //endregion
     //region Konstruktor
@@ -39,19 +37,16 @@ public class Logo extends OneSpriteStaticActor {
                 sprite.setTexture(game.getMyAssetManager().getTexture(LOGO_TEXTURE));
                 break;
             }
-            case SHOP:{
-                sprite.setTexture(game.getMyAssetManager().getTexture(MARANCSHOP_TEXTURE));
-                setSize(game.getMyAssetManager().getTexture(MARANCSHOP_TEXTURE).getWidth(),game.getMyAssetManager().getTexture(MARANCSHOP_TEXTURE).getHeight());
-                break;
-            }
             case OPTIONS:{
                 sprite.setTexture(game.getMyAssetManager().getTexture(OPTIONS_TEXTURE));
                 setSize(game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getWidth()*0.35f,game.getMyAssetManager().getTexture(OPTIONS_TEXTURE).getHeight()*0.35f);
+                speed = 24;
                 break;
             }
             case INFO:{
                 sprite.setTexture(game.getMyAssetManager().getTexture(INFO_TEXTURE));
-                setSize(game.getMyAssetManager().getTexture(INFO_TEXTURE).getWidth()*0.7f,game.getMyAssetManager().getTexture(INFO_TEXTURE).getHeight()*0.7f);
+                setSize(game.getMyAssetManager().getTexture(INFO_TEXTURE).getWidth()*0.35f,game.getMyAssetManager().getTexture(INFO_TEXTURE).getHeight()*0.35f);
+                speed = 24;
                 break;
             }
             default:{
@@ -68,9 +63,10 @@ public class Logo extends OneSpriteStaticActor {
         super.act(delta);
         setRotation(getRotation() + delta * speed);
 
-        if (getRotation() >= 12 || getRotation() <= -12) {
-            speed *= -1;
-        }
+        if(sprite.getTexture() == game.getMyAssetManager().getTexture(LOGO_TEXTURE))
+            if (getRotation() >= 12 || getRotation() <= -12) {
+                speed *= -1;
+            }
     }
     //endregion
 }

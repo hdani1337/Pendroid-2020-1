@@ -35,6 +35,8 @@ public class MenuStage extends PrettySimpleStage {
     public static final String MENU_BG_TEXTURE = "pic/backgrounds/menuBg.jpg";
     public static final String STARTBUTTON_TEXTURE = "pic/gombok/jatek.png";
     public static final String OPTIONSBUTTON_TEXTURE = "pic/gombok/opciok.png";
+    public static final String INFOBUTTON_TEXTURE = "pic/gombok/info.png";
+    public static final String EXITBUTTON_TEXTURE = "pic/gombok/x.png";
 
     public static AssetList assetList = new AssetList();
     static {
@@ -60,9 +62,9 @@ public class MenuStage extends PrettySimpleStage {
         menuElements = new ArrayList<>();
         logo = new Logo(game, Logo.LogoType.MENU);
         start = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
-        info = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
+        info = new OneSpriteStaticActor(game, INFOBUTTON_TEXTURE);
         options = new OneSpriteStaticActor(game, OPTIONSBUTTON_TEXTURE);
-        exit = new OneSpriteStaticActor(game, STARTBUTTON_TEXTURE);
+        exit = new OneSpriteStaticActor(game, EXITBUTTON_TEXTURE);
         bg = new OneSpriteStaticActor(game,MENU_BG_TEXTURE);
 
         menuElements.add(start);
@@ -92,8 +94,6 @@ public class MenuStage extends PrettySimpleStage {
 
     @Override
     public void setPositions() {
-        if(getViewport().getWorldWidth() < bg.getWidth()) bg.setX((getViewport().getWorldWidth()-bg.getWidth())/2);
-
         logo.setPosition(getViewport().getWorldWidth()/2-logo.getWidth()/2,getViewport().getWorldHeight()-logo.getHeight()*1.25f);
 
         start.setX(getViewport().getWorldWidth()/2 - start.getWidth()/2);

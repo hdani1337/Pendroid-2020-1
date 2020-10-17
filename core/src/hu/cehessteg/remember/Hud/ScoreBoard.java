@@ -14,6 +14,7 @@ import hu.csanyzeg.master.MyBaseClasses.Scene2D.MyGroup;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
 import hu.csanyzeg.master.MyBaseClasses.UI.MyLabel;
 
+import static hu.cehessteg.remember.Hud.TextBox.VERDANA_FONT;
 import static hu.cehessteg.remember.Stage.OptionsStage.gamemode;
 
 public class ScoreBoard extends MyGroup implements IPrettyStage {
@@ -59,19 +60,19 @@ public class ScoreBoard extends MyGroup implements IPrettyStage {
     @Override
     public void assignment() {
         textBackground = new OneSpriteStaticActor(game, SCOREBOARD_TEXTURE);
-        scoreLabel = new MyLabel(game, "Pontszám\n0", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
+        scoreLabel = new MyLabel(game, "Pontszám\n0", new Label.LabelStyle(game.getMyAssetManager().getFont(VERDANA_FONT), Color.WHITE)) {
             @Override
             public void init() {
 
             }
         };
-        timeLabel = new MyLabel(game, "00:00", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
+        timeLabel = new MyLabel(game, "Idő\n00:00", new Label.LabelStyle(game.getMyAssetManager().getFont(VERDANA_FONT), Color.WHITE)) {
             @Override
             public void init() {
 
             }
         };
-        levelLabel = new MyLabel(game, "1.szint", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
+        levelLabel = new MyLabel(game, "1.szint", new Label.LabelStyle(game.getMyAssetManager().getFont(VERDANA_FONT), Color.WHITE)) {
             @Override
             public void init() {
 
@@ -87,7 +88,7 @@ public class ScoreBoard extends MyGroup implements IPrettyStage {
     public void setSizes(Viewport viewport) {
         float originalHeight = textBackground.getHeight();
         textBackground.setHeight(viewport.getWorldHeight());
-        textBackground.setWidth((textBackground.getHeight()/originalHeight)*textBackground.getWidth()*0.7f);
+        textBackground.setWidth((textBackground.getHeight()/originalHeight)*textBackground.getWidth()*0.725f);
     }
 
     @Override
@@ -248,6 +249,9 @@ public class ScoreBoard extends MyGroup implements IPrettyStage {
                 seconds = 0;
             }else seconds++;
         }
+
+        if (gamemode == 1) timeText = "Hátralévő idő\n";
+        else timeText += "Eltelt idő\n";
 
         if(minutes<10) timeText+="0"+minutes+":";
         else timeText+=minutes+":";

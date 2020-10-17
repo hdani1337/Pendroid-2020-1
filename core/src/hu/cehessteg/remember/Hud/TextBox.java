@@ -15,11 +15,12 @@ public class TextBox extends MyGroup implements IPrettyStage {
     //region AssetList
     public static final String TEXTBOX_TEXTURE = "pic/ui/textBG.png";
     public static final String RETRO_FONT = "font/fontstyle.ttf";
+    public static final String VERDANA_FONT = "font/verdana.ttf";
 
     public static AssetList assetList = new AssetList();
     static {
         assetList.addTexture(TEXTBOX_TEXTURE);
-        assetList.addFont(RETRO_FONT, RETRO_FONT, 32, Color.WHITE, AssetList.CHARS);
+        assetList.addFont(VERDANA_FONT, VERDANA_FONT, 32, Color.WHITE, AssetList.CHARS);
     }
     //endregion
     //region Változók
@@ -55,7 +56,7 @@ public class TextBox extends MyGroup implements IPrettyStage {
     @Override
     public void assignment() {
         textBackground = new OneSpriteStaticActor(game, TEXTBOX_TEXTURE);
-        textLabel = new MyLabel(game, text, new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
+        textLabel = new MyLabel(game, text, new Label.LabelStyle(game.getMyAssetManager().getFont(VERDANA_FONT), Color.WHITE)) {
             @Override
             public void init() {
 

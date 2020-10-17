@@ -6,6 +6,8 @@ import com.badlogic.gdx.Preferences;
 
 import hu.cehessteg.remember.Screen.GameScreen;
 import hu.cehessteg.remember.Screen.IntroScreen;
+import hu.cehessteg.remember.Screen.MenuScreen;
+import hu.cehessteg.remember.Screen.OptionsScreen;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.cehessteg.remember.Stage.LoadingStage;
 

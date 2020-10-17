@@ -1,14 +1,11 @@
 package hu.cehessteg.remember.Stage;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import java.util.ArrayList;
 
+import hu.cehessteg.remember.Hud.OptionSwitch;
+import hu.cehessteg.remember.Hud.OptionSwitchType;
 import hu.csanyzeg.master.MyBaseClasses.Assets.AssetList;
 import hu.csanyzeg.master.MyBaseClasses.Game.MyGame;
 import hu.csanyzeg.master.MyBaseClasses.Scene2D.OneSpriteStaticActor;
@@ -22,9 +19,8 @@ import hu.cehessteg.remember.SoundManager;
 
 import static hu.cehessteg.remember.MemoryGame.muted;
 import static hu.cehessteg.remember.MemoryGame.preferences;
+import static hu.cehessteg.remember.Stage.InfoStage.BACKBUTTON_TEXTURE;
 import static hu.cehessteg.remember.Stage.MenuStage.MENU_BG_TEXTURE;
-
-//TODO BENCE TERVE ALAPJÁN MEGCSINÁLNI A MENÜPONTOT, MIUTÁN KÉSZEN LESZNEK A TEXTÚRÁK
 
 public class OptionsStage extends PrettyStage {
     public static AssetList assetList = new AssetList();
@@ -36,27 +32,18 @@ public class OptionsStage extends PrettyStage {
 
     public static int difficulty = preferences.getInteger("difficulty");
     public static int gamemode = preferences.getInteger("gamemode");
-    public static int windowWidth = preferences.getInteger("windowWidth");
-    public static int windowHeight = preferences.getInteger("windowHeight");
     public static int size = preferences.getInteger("size");
-    public static boolean fullscreen = preferences.getBoolean("fullscreen");
 
     private OneSpriteStaticActor MenuBackground;
 
     private Logo optionsLogo;
 
-    private TextBox backButton;
-    private TextBox muteButton;
-    private TextBox sizeButton;
-    private TextBox gameModeButton;
-    private TextBox difficultyButton;
-    private TextBox resolutionButton;
-    private TextBox fullscreenButton;
-    private TextBox warningBox;
+    private OneSpriteStaticActor backButton;
+    private OptionSwitch sizeButton;
+    private OptionSwitch gameModeButton;
+    private OptionSwitch difficultyButton;
 
     private boolean setBack;
-
-    private Vector2 Resolution;
 
     public OptionsStage(MyGame game) {
         super(game);
@@ -64,43 +51,34 @@ public class OptionsStage extends PrettyStage {
 
     @Override
     public void assignment() {
-        Resolution = new Vector2(windowWidth,windowHeight);
-        if(windowHeight == 0 && windowWidth == 0) Resolution = new Vector2(1280,720);
         SoundManager.assign();
         if(!muted && SoundManager.menuMusic != null)
             SoundManager.menuMusic.play();
         setBack = false;
         MenuBackground = new OneSpriteStaticActor(game,MENU_BG_TEXTURE);
-        backButton = new TextBox(game,"Vissza a menübe");
-        muteButton = new TextBox(game, "Némítás: -NULL-");
-        gameModeButton = new TextBox(game, "Játékmód: -NULL-");
-        difficultyButton = new TextBox(game, "Nehézség: -NULL-");
-        resolutionButton = new TextBox(game, "Felbontás: 720p");
-        fullscreenButton = new TextBox(game, "Teljes képernyö: -NULL-");
-        sizeButton = new TextBox(game,"Méret: Folyamatos");
-        warningBox = new TextBox(game, "A módosítások a menübe\nlépéskor lépnek érvénybe!");
+        backButton = new OneSpriteStaticActor(game,BACKBUTTON_TEXTURE);
+        gameModeButton = new OptionSwitch(game, OptionSwitchType.GAMEMODE);
+        difficultyButton = new OptionSwitch(game, OptionSwitchType.DIFFICULTY);
+        sizeButton = new OptionSwitch(game,OptionSwitchType.SIZE);
         optionsLogo = new Logo(game, Logo.LogoType.OPTIONS);
-        setTexts();
     }
 
     @Override
     public void setSizes() {
         if(getViewport().getWorldWidth() > MenuBackground.getWidth()) MenuBackground.setWidth(getViewport().getWorldWidth());
         if(getViewport().getWorldHeight() > MenuBackground.getHeight()) MenuBackground.setHeight(getViewport().getWorldHeight());
+        backButton.setSize(160,160);
     }
 
     @Override
     public void setPositions() {
+        backButton.setRotation(180);
         if(getViewport().getWorldWidth() < MenuBackground.getWidth()) MenuBackground.setX((getViewport().getWorldWidth()-MenuBackground.getWidth())/2);
-        backButton.setPosition(getViewport().getWorldWidth() - (backButton.getWidth() + 45),50);
+        backButton.setPosition(getViewport().getWorldWidth() - backButton.getWidth()-16,16);
         optionsLogo.setPosition(getViewport().getWorldWidth()/2 - optionsLogo.getWidth()/2, getViewport().getWorldHeight() - optionsLogo.getHeight()*1.15f);
-        warningBox.setPosition(getViewport().getWorldWidth()*0.2f-warningBox.getWidth()/2,-warningBox.getHeight());
-        fullscreenButton.setPosition(getViewport().getWorldWidth()*0.2f-fullscreenButton.getWidth()/2,getViewport().getWorldHeight()/2-fullscreenButton.getHeight()-32);
-        resolutionButton.setPosition(getViewport().getWorldWidth()*0.8f-resolutionButton.getWidth()/2,fullscreenButton.getY());
-        muteButton.setPosition(getViewport().getWorldWidth()/2-muteButton.getWidth()/2,getViewport().getWorldHeight()-650);
-        gameModeButton.setPosition(getViewport().getWorldWidth()/2-gameModeButton.getWidth()/2,getViewport().getWorldHeight()-500);
-        difficultyButton.setPosition(getViewport().getWorldWidth()/2-difficultyButton.getWidth()/2,getViewport().getWorldHeight()-350);
-        sizeButton.setPosition(getViewport().getWorldWidth()/2-sizeButton.getWidth()/2,getViewport().getWorldHeight()-800);
+        gameModeButton.setPosition(getViewport().getWorldWidth()/2-gameModeButton.getWidth()/2,getViewport().getWorldHeight()-570);
+        difficultyButton.setPosition(getViewport().getWorldWidth()/2-difficultyButton.getWidth()/2,getViewport().getWorldHeight()-420);
+        sizeButton.setPosition(getViewport().getWorldWidth()/2-sizeButton.getWidth()/2,getViewport().getWorldHeight()-720);
     }
 
     @Override
@@ -112,115 +90,9 @@ public class OptionsStage extends PrettyStage {
                 super.clicked(event, x, y);
                 preferences.putInteger("difficulty",difficulty);
                 preferences.putInteger("gamemode",gamemode);
-                preferences.putInteger("windowWidth", (int) Resolution.x);
-                preferences.putInteger("windowHeight", (int) Resolution.y);
-                preferences.putBoolean("fullscreen", fullscreen);
-                preferences.putBoolean("muted",muted);
                 preferences.putInteger("size",size);
                 preferences.flush();
                 setBack = true;
-                windowHeight = (int) Resolution.y;
-                windowWidth = (int) Resolution.x;
-                if(fullscreen && !Gdx.graphics.isFullscreen()) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                else if(!fullscreen) Gdx.graphics.setWindowedMode((int)Resolution.x,(int)Resolution.y);
-            }
-        });
-
-        muteButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                if(!muted){
-                    muted = true;
-                    if(SoundManager.menuMusic != null) SoundManager.menuMusic.pause();
-                }
-                else{
-                    muted = false;
-                    if(SoundManager.menuMusic != null) SoundManager.menuMusic.play();
-                }
-                setTexts();
-            }
-        });
-
-        gameModeButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                if(gamemode == 1){
-                    gamemode = 2;
-                }
-                else{
-                    gamemode = 1;
-                }
-                setTexts();
-            }
-        });
-
-        difficultyButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                if(difficulty == 4){
-                    difficulty = 1;
-                }
-                else{
-                    difficulty++;
-                }
-                setTexts();
-            }
-        });
-
-        ArrayList<Integer> sizes = new ArrayList();
-        sizes.add(0);
-        for (int i = 3; i <= 8; i++){
-            for (int j = 3; j <= 6; j++){
-                sizes.add(i*10+j);
-            }
-        }
-        final int[] sizeIndex = {sizes.indexOf(size)};
-
-        sizeButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                sizeIndex[0]++;
-                if(sizeIndex[0] == sizes.size()) sizeIndex[0] = 0;
-                size = sizes.get(sizeIndex[0]);
-                setTexts();
-            }
-        });
-
-        resolutionButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                //Switch nem működik, nemtudom miért
-                if(Resolution.x == 1920){
-                    Resolution.x = 640;
-                    Resolution.y = 360;
-                }else if(Resolution.x == 1600){
-                    Resolution.x = 1920;
-                    Resolution.y = 1080;
-                }else if(Resolution.x == 1280){
-                    Resolution.x = 1600;
-                    Resolution.y = 900;
-                }else if(Resolution.x == 854){
-                    Resolution.x = 1280;
-                    Resolution.y = 720;
-                }else if(Resolution.x == 640){
-                    Resolution.x = 854;
-                    Resolution.y = 480;
-                }
-                setTexts();
-            }
-        });
-
-        fullscreenButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                fullscreen = !fullscreen;
-                setTexts();
             }
         });
     }
@@ -236,92 +108,11 @@ public class OptionsStage extends PrettyStage {
         addActor(optionsLogo);
         addActor(difficultyButton);
         addActor(backButton);
-        addActor(muteButton);
         addActor(gameModeButton);
-        addActor(warningBox);
         addActor(sizeButton);
-        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
-            addActor(resolutionButton);
-            addActor(fullscreenButton);
-        }
-    }
-    //endregion
-    //region Gombok szövegeinek átállító metódusa
-    private void setTexts(){
-        //Némítás
-        if(muted){
-            muteButton.setText("Némítás: Némítva");
-            if(SoundManager.menuMusic != null) SoundManager.menuMusic.stop();
-        }
-        else{
-            muteButton.setText("Némítás: Nincs némítva");
-        }
-
-        //Nehézségek
-        switch (difficulty){
-            case 1:{
-                difficultyButton.setText("Nehézség: Könnyű");
-                break;
-            }
-            case 2:{
-                difficultyButton.setText("Nehézség: Normál");
-                break;
-            }
-            case 3:{
-                difficultyButton.setText("Nehézség: Nehéz");
-                break;
-            }
-            case 4:{
-                difficultyButton.setText("Nehézség: Lehetetlen");
-                break;
-            }
-            default:{
-                difficultyButton.setText("Nehézség: Normál");
-                preferences.putInteger("difficulty",2);
-                preferences.flush();
-                break;
-            }
-        }
-
-        //Mátrix mérete
-        if(size != 0) sizeButton.setText("Méret: " + size/10 + "x"+ size%10);
-        else sizeButton.setText("Méret: Folyamatos");
-
-        //Játékmód
-        switch (gamemode){
-            case 1:{
-                gameModeButton.setText("Játékmód: Arcade");
-                break;
-            }
-            default:{
-                gameModeButton.setText("Játékmód: Zen");
-                break;
-            }
-        }
-
-        muteButton.setPosition(getViewport().getWorldWidth()/2-muteButton.getWidth()/2,getViewport().getWorldHeight()-650);
-        gameModeButton.setPosition(getViewport().getWorldWidth()/2-gameModeButton.getWidth()/2,getViewport().getWorldHeight()-500);
-        difficultyButton.setPosition(getViewport().getWorldWidth()/2-difficultyButton.getWidth()/2,getViewport().getWorldHeight()-350);
-        sizeButton.setPosition(getViewport().getWorldWidth()/2-sizeButton.getWidth()/2,getViewport().getWorldHeight()-800);
-
-        if(!fullscreen) {
-            resolutionButton.setText("Felbontás: " + (int) Resolution.y + "p");
-            resolutionButton.setColor(Color.WHITE);
-        }
-        else {
-            resolutionButton.setText("Felbontás: " + Gdx.graphics.getHeight() + "p");
-            resolutionButton.setColor(Color.GRAY);
-        }
-        fullscreenButton.setText("Teljes képernyö: " + ((fullscreen) ? "Be" : "Ki"));
-
-        if(Gdx.app.getType() == Application.ApplicationType.Desktop){
-            if(fullscreen == Gdx.graphics.isFullscreen() && Resolution.y == Gdx.graphics.getHeight()) change = false;
-            else change = true;
-        }
     }
     //endregion
     //region Act metódusai
-    boolean change = false;
     float alpha = 0;
     float bgAlpha = 1;
     @Override
@@ -329,7 +120,6 @@ public class OptionsStage extends PrettyStage {
         super.act(delta);
         if(!setBack) fadeIn();
         else fadeOut();
-        checkChangedSettingsOnPc();
         setBackgroundAlpha();
     }
 
@@ -367,21 +157,6 @@ public class OptionsStage extends PrettyStage {
     }
 
     /**
-     * Ez a figyelmeztető doboz csak akkor jön elő, ha PC-n játszuk a játékot
-     * **/
-    private void checkChangedSettingsOnPc(){
-        if(change){
-            if(warningBox.getY()<15) {
-                warningBox.setY(warningBox.getY() + 5);
-            }
-        }else{
-            if(warningBox.getY()>-warningBox.getHeight()) {
-                warningBox.setY(warningBox.getY() - 5);
-            }
-        }
-    }
-
-    /**
      * Háttér átlátszóságát állítja be
      * **/
     private void setBackgroundAlpha(){
@@ -397,13 +172,9 @@ public class OptionsStage extends PrettyStage {
     private void setAlpha(){
         optionsLogo.setAlpha(alpha);
         backButton.setAlpha(alpha);
-        muteButton.setAlpha(alpha);
         gameModeButton.setAlpha(alpha);
         difficultyButton.setAlpha(alpha);
         sizeButton.setAlpha(alpha);
-        resolutionButton.setAlpha(alpha);
-        fullscreenButton.setAlpha(alpha);
-        warningBox.setAlpha(alpha);
     }
     //endregion
 }

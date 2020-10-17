@@ -53,7 +53,6 @@ public class MenuStage extends PrettySimpleStage {
     private OneSpriteStaticActor info;
     private OneSpriteStaticActor options;
     private OneSpriteStaticActor exit;
-    private OneSpriteStaticActor bg;
 
     private ArrayList<OneSpriteStaticActor> menuElements;
 
@@ -65,7 +64,6 @@ public class MenuStage extends PrettySimpleStage {
         info = new OneSpriteStaticActor(game, INFOBUTTON_TEXTURE);
         options = new OneSpriteStaticActor(game, OPTIONSBUTTON_TEXTURE);
         exit = new OneSpriteStaticActor(game, EXITBUTTON_TEXTURE);
-        bg = new OneSpriteStaticActor(game,MENU_BG_TEXTURE);
 
         menuElements.add(start);
         menuElements.add(options);
@@ -87,8 +85,6 @@ public class MenuStage extends PrettySimpleStage {
                a.setSize(a.getWidth()*0.0025f,a.getHeight()*0.0025f);
 
         logo.setSize(logo.getWidth()*0.007f,logo.getHeight()*0.007f);
-        bg.setWidth(getViewport().getWorldWidth());
-        bg.setHeight(getViewport().getWorldHeight());
         logo.setOrigintoCenter();
     }
 
@@ -195,7 +191,6 @@ public class MenuStage extends PrettySimpleStage {
 
     @Override
     public void addActors() {
-        addActor(bg);
         addActor(logo);
         addActor(start);
         addActor(info);

@@ -20,10 +20,8 @@ import hu.cehessteg.remember.Hud.TextBox;
 import hu.csanyzeg.master.MyBaseClasses.UI.MyLabel;
 
 import static hu.cehessteg.remember.Hud.TextBox.RETRO_FONT;
+import static hu.cehessteg.remember.Hud.TextBox.VERDANA_FONT;
 import static hu.cehessteg.remember.Stage.MenuStage.MENU_BG_TEXTURE;
-
-//TODO BENCE TERVE ALAPJÁN MEGCSINÁLNI A MENÜPONTOT, MIUTÁN KÉSZEN LESZNEK A TEXTÚRÁK
-//TODO SZÖVEGET FOGALMAZNI
 
 public class InfoStage extends PrettyStage {
     public static String BACKBUTTON_TEXTURE = "pic/gombok/play_kek.png";
@@ -70,7 +68,7 @@ public class InfoStage extends PrettyStage {
                 "Ezeket a paramétereket az Opciók menüpontban adhatod meg.\n" +
                 "\nJó játékot kíván a Céhessteg csapata!";
 
-        text = new MyLabel(game, infoText, new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.BLACK)) {
+        text = new MyLabel(game, infoText, new Label.LabelStyle(game.getMyAssetManager().getFont(VERDANA_FONT), Color.BLACK)) {
             @Override
             public void init() {
 

@@ -131,7 +131,7 @@ public class Card extends MyGroup {
         addListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if(isAct && !isGameOver && getColor().a!=0) {
+                if(isAct && !isGameOver && backCard.getColor().a!=0 && CardStage.kartyak.size()>1) {
                     if (!isShuffling && !isShowing) {
                         Card.this.isSelected = !Card.this.isSelected;
                         flipCard();

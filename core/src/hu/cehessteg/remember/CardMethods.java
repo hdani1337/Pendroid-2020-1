@@ -131,6 +131,15 @@ public class CardMethods {
                         ((SimpleWorldHelper) c.backCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f, 0, 0, 0, 0);
                     }
                     nextLevel();
+                }else if(cardStage.kartyak.size() == 2){
+                    //Peti tesztjénél előfordult, hogy 2 különböző fajta kártya maradt
+                    if(cardStage.kartyak.get(0).type != cardStage.kartyak.get(1).type){
+                        for (Card c : cardStage.kartyak) {
+                            ((SimpleWorldHelper) c.frontCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f, 0, 0, 0, 0);
+                            ((SimpleWorldHelper) c.backCard.getActorWorldHelper()).getBody().colorToFixTime(1.25f, 0, 0, 0, 0);
+                        }
+                        nextLevel();
+                    }
                 }
             }else{
                 //Ha nem egyeznek, levesszük a kiválasztást a kártyákról és pontlevonás

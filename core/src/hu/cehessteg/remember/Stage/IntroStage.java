@@ -19,6 +19,7 @@ public class IntroStage extends PrettyStage {
     public static final String GDX_TEXTURE = "pic/logos/gdx.png";
     public static final String CSANY_TEXTURE = "pic/logos/csany.png";
     public static final String CSAPAT_TEXTURE = "pic/logos/csapat.png";
+    public static final String PENDROID_TEXTURE = "pic/logos/pendroid.png";
 
     public static AssetList assetList = new AssetList();
     static {
@@ -26,12 +27,14 @@ public class IntroStage extends PrettyStage {
         assetList.addTexture(GDX_TEXTURE);
         assetList.addTexture(CSANY_TEXTURE);
         assetList.addTexture(CSAPAT_TEXTURE);
+        assetList.addTexture(PENDROID_TEXTURE);
         assetList.addFont(RETRO_FONT, RETRO_FONT, 32, Color.WHITE, AssetList.CHARS);
     }
     private OneSpriteStaticActor bg;
     private OneSpriteStaticActor gdxLogo;
     private OneSpriteStaticActor csanyLogo;
     private OneSpriteStaticActor csapatLogo;
+    private OneSpriteStaticActor pendroidLogo;
     private MyLabel copyright;
     //endregion
     //region Konstruktor
@@ -46,6 +49,7 @@ public class IntroStage extends PrettyStage {
         gdxLogo = new OneSpriteStaticActor(game, GDX_TEXTURE);
         csanyLogo = new OneSpriteStaticActor(game, CSANY_TEXTURE);
         csapatLogo = new OneSpriteStaticActor(game, CSAPAT_TEXTURE);
+        pendroidLogo = new OneSpriteStaticActor(game, PENDROID_TEXTURE);
 
         copyright = new MyLabel(game,"Copyright 2020 Céhessteg. Minden jog fenntartva.", new Label.LabelStyle(game.getMyAssetManager().getFont(RETRO_FONT), Color.WHITE)) {
             @Override
@@ -67,7 +71,8 @@ public class IntroStage extends PrettyStage {
         if(getViewport().getWorldWidth() < bg.getWidth()) bg.setX((getViewport().getWorldWidth()-bg.getWidth())/2);
 
         gdxLogo.setPosition(getViewport().getWorldWidth()/2-gdxLogo.getWidth()/2,getViewport().getWorldHeight()/2-gdxLogo.getHeight()/2);
-        csanyLogo.setPosition(getViewport().getWorldWidth()/2-csanyLogo.getWidth()/2, getViewport().getWorldHeight()/2-csanyLogo.getHeight()/2);
+        pendroidLogo.setPosition(getViewport().getWorldWidth()/2-pendroidLogo.getWidth()-50, getViewport().getWorldHeight()/2-pendroidLogo.getHeight()/2);
+        csanyLogo.setPosition(getViewport().getWorldWidth()/2+50, getViewport().getWorldHeight()/2-csanyLogo.getHeight()/2);
         copyright.setPosition(getViewport().getWorldWidth()/2-copyright.getWidth()/2, 20);
         csapatLogo.setPosition(getViewport().getWorldWidth()/2-csapatLogo.getWidth()/2, getViewport().getWorldHeight()/2-csapatLogo.getHeight()/2);
     }
@@ -88,6 +93,7 @@ public class IntroStage extends PrettyStage {
         addActor(gdxLogo);
         addActor(csanyLogo);
         addActor(copyright);
+        addActor(pendroidLogo);
         addActor(csapatLogo);
 
         for (Actor actor : getActors()) actor.setColor(1,1,1,0);
@@ -141,8 +147,8 @@ public class IntroStage extends PrettyStage {
 
             case 1: {
                 pElapsed += delta;
-                if (pElapsed < 0.75) fadeIn(csanyLogo);
-                else if (pElapsed > 1.5) fadeOut(csanyLogo);
+                if (pElapsed < 0.75) fadeIn(csanyLogo,pendroidLogo);
+                else if (pElapsed > 1.5) fadeOut(csanyLogo,pendroidLogo);
                 break;
             }
 
